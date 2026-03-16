@@ -1,0 +1,208 @@
+% Jason R. Blevins - Curriculum Vitae
+%
+% Copyright (C) 2004-2012 Jason R. Blevins
+%
+% You may use use this document as a template to create your own CV
+% and you may redistribute the source code freely.  No attribution is
+% required in any resulting documents.  I do ask that you please leave
+% this notice and the above URL in the source code if you choose to
+% redistribute this file.
+
+\documentclass[10pt,a4paper]{article}
+
+%\renewcommand{\section}{\section{\bold{#1}}
+
+\newcommand{\blankpage}{
+\newpage
+\thispagestyle{empty}
+\mbox{}
+\newpage
+}
+
+\usepackage[colorlinks=false]{hyperref}
+\hypersetup{%
+  colorlinks = true,
+  linkcolor  = black
+}
+\usepackage{geometry}
+\usepackage{url}
+\usepackage{booktabs}
+
+% Fonts
+\usepackage{times}
+\usepackage[T1]{fontenc}
+%\usepackage[urw-garamond]{mathdesign}
+
+\def\course{Distributed Algorithms}
+\def\coursePT{Algoritmos Distribu{\'i}dos}
+
+\def\titulo{\course{}:\\Specification of the Protocols in the Babel Example}
+\title{\titulo}
+
+\def\data{\today}
+\date{\data}
+
+
+
+% Set your name here
+\def\name{Jo{\~a}o Carlos Antunes Leit{\~a}o}
+\def\institution{
+NOVA Laboratory for Computer Science and Informatics (NOVA LINCS)\\
+and\\
+Departamento de Inform{\'a}tica\\
+Faculdade de Ci{\^e}ncias e Tecnologia\\
+Universidade NOVA de Lisboa}
+
+\author{\name\\ \institution}
+
+% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {Pseudo-Code, Reliable Broadcast}
+  pdftitle = {\course: Homework 1 Possible Solutions},
+  pdfsubject = {\course},
+  pdfpagemode = UseNone
+}
+
+\geometry{
+  body={6.5in, 9.0in},
+  left=1.0in,
+  top=1.0in
+}
+
+% Customize page headers
+\pagestyle{myheadings}
+\markright{\course - Homework 1 }
+\thispagestyle{empty}
+
+% Custom section fonts
+\usepackage{sectsty}
+
+\usepackage[english,ruled]{algorithm2e}
+\usepackage{amsmath}
+
+\sectionfont{\rmfamily\mdseries\Large\textbf}
+\subsectionfont{\rmfamily\mdseries\itshape\large}
+
+% Other possible font commands include:
+% \ttfamily for teletype,
+% \sffamily for sans serif,
+% \bfseries for bold,
+% \scshape for small caps,
+% \normalsize, \large, \Large, \LARGE sizes.
+
+% Don't indent paragraphs.
+\setlength\parindent{0em}
+
+% Make lists without bullets and compact spacing
+\renewenvironment{itemize}{
+  \begin{list}{}{
+    \setlength{\leftmargin}{1.5em}
+    \setlength{\itemsep}{0.25em}
+    \setlength{\parskip}{0pt}
+    \setlength{\parsep}{0.25em}
+  }
+}{
+  \end{list}
+}
+
+\renewcommand{\thealgocf}{}
+
+\begin{document}
+
+\pagenumbering{arabic} 
+
+\maketitle
+
+\begin{algorithm}[h!]
+\label{alg:foreach}
+\caption{Flood Broadcast}
+\begin{tabbing}
+xxx\=xxx\=xxx\=xxx\=xxx\=xxx\=xxx\kill
+\textbf{Interface:}\\
+\> \textbf{Requests:}\\
+\> \> \textbf{BroadcastRequest ( $s$, $mid$, $m$ )} \texttt{//s is the sender, m the message}\\
+\> \textbf{Indications:}\\
+\> \> \textbf{BroadcastDeliver ( $s$, $mid$ $m$ )} \texttt{//s is the sender, m the message}\\
+~\\
+\textbf{State:}\\
+\> neighbors \texttt{set with all neighbors}\\
+\> received \texttt{set with message identifiers already received}\\
+~\\
+\> \textbf{Upon Init () do:}\\
+\> \> neighbors $\longleftarrow \{ \}$\\
+\> \> received  $\longleftarrow \{ \}$\\
+~\\
+\> \textbf{Upon BroadcastRequest ( $s$, $mid$, $m$ ) do:}\\
+\> \> \textbf{Call} processFloodMessage( \textsc{FloodMSG}, \{$s$, $mid$, $m$\} )\\
+~\\
+\> \textbf{Upon Receive ( \textsc{FloodMSG}, \{$s$, $mid$, $m$\} ) do:}\\
+\> \> \textbf{Call} processFloodMessage( \{$s$, $mid$, $m$\} )\\
+~\\
+\> \textbf{Procedure} processFloodMessage ( \{$s$, $mid$, $m$\} )\\
+\> \> \textbf{If} $mid$ $\exists$ received \textbf{Then}\\
+\> \> \> received $\longleftarrow$ received $\cup$ $mid$\\
+\> \> \> \textbf{Trigger} BroadcastDeliver ( $s$, $mid$ $m$ )\\
+\> \> \> \textbf{Foreach} $p \in $ neighbors \textbf{do}\\
+\> \> \> \> \textbf{Trigger} Send ( $p$, \textsc{FloodMSG}, \{$s$, $mid$, $m$\} )\\
+~\\
+\> \textbf{Upon NeighborUP} ( $p$ ) \textbf{do}\\
+\> \> neighbors $\longleftarrow$ neighbors $\cup$ $\{p\}$\\
+~\\
+\> \textbf{Upon NeighborDown} ( $p$ ) \textbf{do}\\
+\> \> neighbors $\longleftarrow$ neighbors $\setminus$ $\{p\}$\\
+~\\
+\end{tabbing}
+\end{algorithm} 
+
+
+\begin{algorithm}[h!]
+\label{alg:foreach}
+\caption{Simple Full Membership}
+\begin{tabbing}
+xxx\=xxx\=xxx\=xxx\=xxx\=xxx\=xxx\kill
+\textbf{Interface:}\\
+\> \textbf{Requests:}\\
+~\\
+\> \textbf{Indications:}\\
+\> \> \textbf{neighborUP ( $p$ )} \\
+\> \> \textbf{neighborDOWN ( $p$ )} \\
+~\\
+\textbf{State:}\\
+\> self \texttt{//identifier of self}\\
+\> membership \texttt{//Set with all neighbors}\\
+\> subsetSize \texttt{//number of neighbors to send to other}\\
+\> $\mathcal{T}$ \texttt{//period between anouncements}\\
+~\\
+\> \textbf{Upon Init (myself, ssSize, t, contact ) do:}\\
+\> \> self $\longleftarrow$ myself\\
+\> \> membershio $\longleftarrow \{ \} $\\
+\> \> \textbf{If} contact $\not=$ $\bot$ \textbf{Then}\\
+\> \> \> membershio $\longleftarrow$ membership $\cup$ $\{$ contact $\}$\\
+\> \> \> \textbf{Trigger} NeighborUP ( contact ) \\
+\> \> subsetSize $\longleftarrow$ ssSize\\
+\> \> $\mathcal{T}$ $\longleftarrow$ t\\
+\> \> \textbf{Setup Periodic Timer} \textsc{SampleTimer} ( $\mathcal{T}$ )\\
+~\\
+\> \textbf{Upon Timer} \textsc{SampleTimer} \textbf{do:}\\
+\> \> \textbf{If} \#membership $>= 1$ \textbf{Then}\\
+\> \> \> target $\longleftarrow$ random(membership)\\
+\> \> \> sample $\longleftarrow$ $\{$ self $\}$\\ 
+\> \> \> sample $\longleftarrow$ random( subsetSize, membershop $\setminus$ $\{$ target $\}$\\
+\> \> \> \textbf{Trigger Send (target, \textsc{SampleMSG}, sample}\\
+~\\
+\> \textbf{Upon Receive} ( $s$, \textsc{SampleMSG}, sample ) \textbf{do:}\\
+\> \> \textbf{Foreach} $p \in $ sample \textbf{do}\\
+\> \> \> \textbf{If} $p \notin$ membership \textbf{do}\\
+\> \> \> \> membership $\longleftarrow$ membership $\cup$ $\{ p \}$\\ 
+\> \> \> \> \textbf{Trigger} NeighborUP ( $p$ ) \\
+~\\
+\> \textbf{Upon ChannelClosed ( $p$ ) do:}\\
+\> \> \textbf{If} $p \in$ membership \textbf{do}\\
+\> \> \> membership $\longleftarrow$ membership $\setminus$ $\{ p \}$\\ 
+\> \> \> \textbf{Trigger} NeighborDOWN ( $p$ )
+\end{tabbing}
+\end{algorithm} 
+\end{document}
