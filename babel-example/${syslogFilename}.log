@@ -1,95 +1,83 @@
-[32mI[11:33:47,144] [main]Main:[m Hello, I am 172.30.191.253:10102
-[36mD[11:33:47,840] [TCPChannel-1-1]TCPChannel:[m Server socket ready
-[32mI[11:33:47,867] [main]BroadcastApp:[m Waiting...
-[36mD[11:33:47,872] [TCPChannel-1-1]TCPChannel:[m onOpenConnection creating connection to: 10.139.24.136:10101
-[36mD[11:33:47,890] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@6c76bc7b
-[36mD[11:33:47,926] [epollEventLoopGroup-3-1]OutConnectionHandler:[m Connecting to 10.139.24.136:10101
-[36mD[11:33:48,978] [epollEventLoopGroup-3-1]OutConnectionHandler:[m Connecting failed: io.netty.channel.ConnectTimeoutException: connection timed out after 1000 ms: /10.139.24.136:10101
-[36mD[11:33:48,982] [TCPChannel-1-1]TCPChannel:[m OutboundConnectionFailed 10.139.24.136:10101 io.netty.channel.ConnectTimeoutException: connection timed out after 1000 ms: /10.139.24.136:10101
-[36mD[11:33:48,988] [200-Flood]GenericProtocol:[m Handling event: ChannelEvent{event=OutConnectionFailed{node=10.139.24.136:10101, pendingMessages=[], cause=io.netty.channel.ConnectTimeoutException: connection timed out after 1000 ms: /10.139.24.136:10101}, channelId=1}
-[36mD[11:33:48,988] [100-FullMembership]GenericProtocol:[m Handling event: ChannelEvent{event=OutConnectionFailed{node=10.139.24.136:10101, pendingMessages=[], cause=io.netty.channel.ConnectTimeoutException: connection timed out after 1000 ms: /10.139.24.136:10101}, channelId=1}
-[36mD[11:33:48,990] [200-Flood]GenericProtocol:[m Discarding unhandled channel event (id 1): ChannelEvent{event=OutConnectionFailed{node=10.139.24.136:10101, pendingMessages=[], cause=io.netty.channel.ConnectTimeoutException: connection timed out after 1000 ms: /10.139.24.136:10101}, channelId=1}
-[36mD[11:33:48,991] [100-FullMembership]GossipBasedFullMembership:[m Connection to 10.139.24.136:10101 failed cause: io.netty.channel.ConnectTimeoutException: connection timed out after 1000 ms: /10.139.24.136:10101
-[36mD[11:33:50,874] [100-FullMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.full.timers.SampleTimer@3aa6db7f, consumer=protocols.membership.full.GossipBasedFullMembership@3e9958f3, triggerTime=6001, periodic=true, period=3000}
-[36mD[11:33:50,876] [100-FullMembership]GossipBasedFullMembership:[m Sample Time: membership[]
-[36mD[11:33:52,873] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=1, timer=protocols.apps.timers.StartTimer@63c5a628, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=5000, periodic=false, period=-1}
-[32mI[11:33:52,875] [300-BroadcastApp]BroadcastApp:[m Starting
-[36mD[11:33:52,876] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@6d024420, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=8004, periodic=true, period=3000}
-[32mI[11:33:52,879] [300-BroadcastApp]BroadcastApp:[m Sending: 85a19082-0ef9-438a-93ce-5ee6806d1235 - QAYLBDSPJHNJGAGCZPCX (20)
-[36mD[11:33:52,881] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@7dc675f9
-[36mD[11:33:52,882] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@63b002ce
-[32mI[11:33:52,883] [300-BroadcastApp]BroadcastApp:[m Received 85a19082-0ef9-438a-93ce-5ee6806d1235 - QAYLBDSPJHNJGAGCZPCX (20) from 172.30.191.253:10102
-[36mD[11:33:53,874] [100-FullMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.full.timers.SampleTimer@3aa6db7f, consumer=protocols.membership.full.GossipBasedFullMembership@3e9958f3, triggerTime=9002, periodic=true, period=3000}
-[36mD[11:33:53,877] [100-FullMembership]GossipBasedFullMembership:[m Sample Time: membership[]
-[36mD[11:33:55,877] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@6d024420, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=11004, periodic=true, period=3000}
-[32mI[11:33:55,878] [300-BroadcastApp]BroadcastApp:[m Sending: ea420943-c85a-47ff-92c0-7ef2a9789e0e - SJGSTFODGMJKORNAIKUW (20)
-[36mD[11:33:55,879] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@2aeaf9bd
-[36mD[11:33:55,880] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@1bddfb19
-[32mI[11:33:55,881] [300-BroadcastApp]BroadcastApp:[m Received ea420943-c85a-47ff-92c0-7ef2a9789e0e - SJGSTFODGMJKORNAIKUW (20) from 172.30.191.253:10102
-[36mD[11:33:56,875] [100-FullMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.full.timers.SampleTimer@3aa6db7f, consumer=protocols.membership.full.GossipBasedFullMembership@3e9958f3, triggerTime=12003, periodic=true, period=3000}
-[36mD[11:33:56,877] [100-FullMembership]GossipBasedFullMembership:[m Sample Time: membership[]
-[36mD[11:33:58,877] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@6d024420, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=14004, periodic=true, period=3000}
-[32mI[11:33:58,879] [300-BroadcastApp]BroadcastApp:[m Sending: 168a0e08-e403-48cd-aebd-ac8c7e16e316 - JAFSWZUPCPXFOHHVBWWG (20)
-[36mD[11:33:58,880] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@64cd28a4
-[36mD[11:33:58,881] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@22ae20cf
-[32mI[11:33:58,882] [300-BroadcastApp]BroadcastApp:[m Received 168a0e08-e403-48cd-aebd-ac8c7e16e316 - JAFSWZUPCPXFOHHVBWWG (20) from 172.30.191.253:10102
-[36mD[11:33:59,876] [100-FullMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.full.timers.SampleTimer@3aa6db7f, consumer=protocols.membership.full.GossipBasedFullMembership@3e9958f3, triggerTime=15003, periodic=true, period=3000}
-[36mD[11:33:59,878] [100-FullMembership]GossipBasedFullMembership:[m Sample Time: membership[]
-[36mD[11:34:01,876] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@6d024420, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=17004, periodic=true, period=3000}
-[32mI[11:34:01,878] [300-BroadcastApp]BroadcastApp:[m Sending: e5dd1832-09ac-483d-81e2-160ccacb1158 - ESTTUZSTKKPUFCABRDST (20)
-[36mD[11:34:01,879] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@f6a0d11
-[36mD[11:34:01,880] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@154167cb
-[32mI[11:34:01,880] [300-BroadcastApp]BroadcastApp:[m Received e5dd1832-09ac-483d-81e2-160ccacb1158 - ESTTUZSTKKPUFCABRDST (20) from 172.30.191.253:10102
-[36mD[11:34:02,876] [100-FullMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.full.timers.SampleTimer@3aa6db7f, consumer=protocols.membership.full.GossipBasedFullMembership@3e9958f3, triggerTime=18003, periodic=true, period=3000}
-[36mD[11:34:02,877] [100-FullMembership]GossipBasedFullMembership:[m Sample Time: membership[]
-[36mD[11:34:04,877] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@6d024420, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=20005, periodic=true, period=3000}
-[32mI[11:34:04,879] [300-BroadcastApp]BroadcastApp:[m Sending: 0bec92a3-6227-4e00-8529-6f5e0a823181 - WMOHUTABQARATFREASUO (20)
-[36mD[11:34:04,880] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@2540fdee
-[36mD[11:34:04,881] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@7604a1df
-[32mI[11:34:04,882] [300-BroadcastApp]BroadcastApp:[m Received 0bec92a3-6227-4e00-8529-6f5e0a823181 - WMOHUTABQARATFREASUO (20) from 172.30.191.253:10102
-[36mD[11:34:05,876] [100-FullMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.full.timers.SampleTimer@3aa6db7f, consumer=protocols.membership.full.GossipBasedFullMembership@3e9958f3, triggerTime=21003, periodic=true, period=3000}
-[36mD[11:34:05,877] [100-FullMembership]GossipBasedFullMembership:[m Sample Time: membership[]
-[36mD[11:34:07,880] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@6d024420, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=23008, periodic=true, period=3000}
-[32mI[11:34:07,882] [300-BroadcastApp]BroadcastApp:[m Sending: 4321aa37-598e-45db-8485-0925bb8ddfe5 - WWHKDZLRCMIHAHBVAHMW (20)
-[36mD[11:34:07,884] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@581acfea
-[36mD[11:34:07,884] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@2759935
-[32mI[11:34:07,885] [300-BroadcastApp]BroadcastApp:[m Received 4321aa37-598e-45db-8485-0925bb8ddfe5 - WWHKDZLRCMIHAHBVAHMW (20) from 172.30.191.253:10102
-[36mD[11:34:08,877] [100-FullMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.full.timers.SampleTimer@3aa6db7f, consumer=protocols.membership.full.GossipBasedFullMembership@3e9958f3, triggerTime=24004, periodic=true, period=3000}
-[36mD[11:34:08,878] [100-FullMembership]GossipBasedFullMembership:[m Sample Time: membership[]
-[36mD[11:34:10,881] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@6d024420, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=26009, periodic=true, period=3000}
-[32mI[11:34:10,882] [300-BroadcastApp]BroadcastApp:[m Sending: bbe21766-d7d9-45da-b4b8-4bb978498108 - RZWNSYDKFMICVAUQBALQ (20)
-[36mD[11:34:10,883] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@559f4445
-[36mD[11:34:10,884] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@510e69ec
-[32mI[11:34:10,885] [300-BroadcastApp]BroadcastApp:[m Received bbe21766-d7d9-45da-b4b8-4bb978498108 - RZWNSYDKFMICVAUQBALQ (20) from 172.30.191.253:10102
-[36mD[11:34:11,877] [100-FullMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.full.timers.SampleTimer@3aa6db7f, consumer=protocols.membership.full.GossipBasedFullMembership@3e9958f3, triggerTime=27005, periodic=true, period=3000}
-[36mD[11:34:11,878] [100-FullMembership]GossipBasedFullMembership:[m Sample Time: membership[]
-[36mD[11:34:13,883] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@6d024420, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=29010, periodic=true, period=3000}
-[32mI[11:34:13,885] [300-BroadcastApp]BroadcastApp:[m Sending: 85f4614a-ec43-4a22-8d42-dc9b7618dac5 - NBGGPJBCMWWAOMDUPNFF (20)
-[36mD[11:34:13,886] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@a42c962
-[36mD[11:34:13,887] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@4fef3339
-[32mI[11:34:13,888] [300-BroadcastApp]BroadcastApp:[m Received 85f4614a-ec43-4a22-8d42-dc9b7618dac5 - NBGGPJBCMWWAOMDUPNFF (20) from 172.30.191.253:10102
-[36mD[11:34:14,878] [100-FullMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.full.timers.SampleTimer@3aa6db7f, consumer=protocols.membership.full.GossipBasedFullMembership@3e9958f3, triggerTime=30006, periodic=true, period=3000}
-[36mD[11:34:14,879] [100-FullMembership]GossipBasedFullMembership:[m Sample Time: membership[]
-[36mD[11:34:16,883] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@6d024420, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=32010, periodic=true, period=3000}
-[32mI[11:34:16,885] [300-BroadcastApp]BroadcastApp:[m Sending: 96a53579-a2bc-4a14-a10e-b60c14c986b7 - ZZIWUKAEXYLRIFTYAONW (20)
-[36mD[11:34:16,887] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@28cffa49
-[36mD[11:34:16,888] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@1cb66942
-[32mI[11:34:16,889] [300-BroadcastApp]BroadcastApp:[m Received 96a53579-a2bc-4a14-a10e-b60c14c986b7 - ZZIWUKAEXYLRIFTYAONW (20) from 172.30.191.253:10102
-[36mD[11:34:17,878] [100-FullMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.full.timers.SampleTimer@3aa6db7f, consumer=protocols.membership.full.GossipBasedFullMembership@3e9958f3, triggerTime=33006, periodic=true, period=3000}
-[36mD[11:34:17,880] [100-FullMembership]GossipBasedFullMembership:[m Sample Time: membership[]
-[36mD[11:34:19,883] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@6d024420, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=35011, periodic=true, period=3000}
-[32mI[11:34:19,884] [300-BroadcastApp]BroadcastApp:[m Sending: ea98cfe0-1617-4cab-b4b2-29bc995cdd45 - ERBTFSBYBWNOMDTWMTGE (20)
-[36mD[11:34:19,885] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@26241525
-[36mD[11:34:19,886] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@32a4e7d0
-[32mI[11:34:19,886] [300-BroadcastApp]BroadcastApp:[m Received ea98cfe0-1617-4cab-b4b2-29bc995cdd45 - ERBTFSBYBWNOMDTWMTGE (20) from 172.30.191.253:10102
-[36mD[11:34:20,878] [100-FullMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.full.timers.SampleTimer@3aa6db7f, consumer=protocols.membership.full.GossipBasedFullMembership@3e9958f3, triggerTime=36006, periodic=true, period=3000}
-[36mD[11:34:20,880] [100-FullMembership]GossipBasedFullMembership:[m Sample Time: membership[]
-[36mD[11:34:22,877] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=4, timer=protocols.apps.timers.StopTimer@1047b961, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=35004, periodic=false, period=-1}
-[32mI[11:34:22,878] [300-BroadcastApp]BroadcastApp:[m Stopping broadcasts
-[36mD[11:34:23,879] [100-FullMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.full.timers.SampleTimer@3aa6db7f, consumer=protocols.membership.full.GossipBasedFullMembership@3e9958f3, triggerTime=39007, periodic=true, period=3000}
-[36mD[11:34:23,881] [100-FullMembership]GossipBasedFullMembership:[m Sample Time: membership[]
-[36mD[11:34:26,879] [100-FullMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.full.timers.SampleTimer@3aa6db7f, consumer=protocols.membership.full.GossipBasedFullMembership@3e9958f3, triggerTime=42007, periodic=true, period=3000}
-[36mD[11:34:26,880] [100-FullMembership]GossipBasedFullMembership:[m Sample Time: membership[]
-[36mD[11:34:27,879] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=5, timer=protocols.apps.timers.ExitTimer@260736ab, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=40007, periodic=false, period=-1}
-[32mI[11:34:27,880] [300-BroadcastApp]BroadcastApp:[m Exiting...
-[32mI[11:34:27,881] [Thread-1]Main:[m Goodbye
+[32mI[22:29:47,560] [main]Main:[m Hello, I am 172.30.191.253:10102
+[36mD[22:29:48,066] [TCPChannel-1-1]TCPChannel:[m Server socket ready
+[32mI[22:29:48,081] [main]BroadcastApp:[m Waiting...
+[36mD[22:29:48,084] [TCPChannel-1-1]TCPChannel:[m onOpenConnection creating connection to: 10.139.24.136:10101
+[36mD[22:29:48,090] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@443ea3f9
+[36mD[22:29:48,095] [epollEventLoopGroup-3-1]OutConnectionHandler:[m Connecting to 10.139.24.136:10101
+[36mD[22:29:49,113] [epollEventLoopGroup-3-1]OutConnectionHandler:[m Connecting failed: io.netty.channel.ConnectTimeoutException: connection timed out after 1000 ms: /10.139.24.136:10101
+[36mD[22:29:49,117] [TCPChannel-1-1]TCPChannel:[m OutboundConnectionFailed 10.139.24.136:10101 io.netty.channel.ConnectTimeoutException: connection timed out after 1000 ms: /10.139.24.136:10101
+[36mD[22:29:49,124] [102-CyclonMembership]GenericProtocol:[m Handling event: ChannelEvent{event=OutConnectionFailed{node=10.139.24.136:10101, pendingMessages=[], cause=io.netty.channel.ConnectTimeoutException: connection timed out after 1000 ms: /10.139.24.136:10101}, channelId=1}
+[36mD[22:29:49,125] [200-Flood]GenericProtocol:[m Handling event: ChannelEvent{event=OutConnectionFailed{node=10.139.24.136:10101, pendingMessages=[], cause=io.netty.channel.ConnectTimeoutException: connection timed out after 1000 ms: /10.139.24.136:10101}, channelId=1}
+[36mD[22:29:49,126] [102-CyclonMembership]CyclonMembership:[m Connection to 10.139.24.136:10101 failed cause: io.netty.channel.ConnectTimeoutException: connection timed out after 1000 ms: /10.139.24.136:10101
+[36mD[22:29:49,126] [200-Flood]GenericProtocol:[m Discarding unhandled channel event (id 1): ChannelEvent{event=OutConnectionFailed{node=10.139.24.136:10101, pendingMessages=[], cause=io.netty.channel.ConnectTimeoutException: connection timed out after 1000 ms: /10.139.24.136:10101}, channelId=1}
+[36mD[22:29:50,085] [102-CyclonMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.cyclon.timers.ShuffleTimer@573fd637, consumer=protocols.membership.cyclon.CyclonMembership@53004808, triggerTime=4001, periodic=true, period=2000}
+[36mD[22:29:50,086] [102-CyclonMembership]CyclonMembership:[m Shuffle timer triggered
+[36mD[22:29:52,085] [102-CyclonMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.cyclon.timers.ShuffleTimer@573fd637, consumer=protocols.membership.cyclon.CyclonMembership@53004808, triggerTime=6001, periodic=true, period=2000}
+[36mD[22:29:52,086] [102-CyclonMembership]CyclonMembership:[m Shuffle timer triggered
+[36mD[22:29:53,085] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=1, timer=protocols.apps.timers.StartTimer@5e4662d7, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=5000, periodic=false, period=-1}
+[32mI[22:29:53,086] [300-BroadcastApp]BroadcastApp:[m Starting
+[36mD[22:29:53,088] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@5081876f, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=8004, periodic=true, period=3000}
+[32mI[22:29:53,099] [300-BroadcastApp]BroadcastApp:[m Sending: 2e1da8d1-076e-4a77-aec8-7365fbca82c4 - CUVQZEJAMDXRXLIMGZOW (20)
+[36mD[22:29:53,102] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@375ceade
+[36mD[22:29:53,102] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@1a5bc73b
+[32mI[22:29:53,103] [300-BroadcastApp]BroadcastApp:[m Received 2e1da8d1-076e-4a77-aec8-7365fbca82c4 - CUVQZEJAMDXRXLIMGZOW (20) from 172.30.191.253:10102
+[36mD[22:29:54,085] [102-CyclonMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.cyclon.timers.ShuffleTimer@573fd637, consumer=protocols.membership.cyclon.CyclonMembership@53004808, triggerTime=8001, periodic=true, period=2000}
+[36mD[22:29:54,087] [102-CyclonMembership]CyclonMembership:[m Shuffle timer triggered
+[36mD[22:29:56,086] [102-CyclonMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.cyclon.timers.ShuffleTimer@573fd637, consumer=protocols.membership.cyclon.CyclonMembership@53004808, triggerTime=10001, periodic=true, period=2000}
+[36mD[22:29:56,087] [102-CyclonMembership]CyclonMembership:[m Shuffle timer triggered
+[36mD[22:29:56,089] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@5081876f, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=11005, periodic=true, period=3000}
+[32mI[22:29:56,090] [300-BroadcastApp]BroadcastApp:[m Sending: 74d2db7d-3cc2-4b89-847b-bb66c220f21f - DRILXYAJCAISMJZLIGKJ (20)
+[36mD[22:29:56,091] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@4f6ba3a8
+[36mD[22:29:56,093] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@2e6b9ec4
+[32mI[22:29:56,094] [300-BroadcastApp]BroadcastApp:[m Received 74d2db7d-3cc2-4b89-847b-bb66c220f21f - DRILXYAJCAISMJZLIGKJ (20) from 172.30.191.253:10102
+[36mD[22:29:58,086] [102-CyclonMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.cyclon.timers.ShuffleTimer@573fd637, consumer=protocols.membership.cyclon.CyclonMembership@53004808, triggerTime=12001, periodic=true, period=2000}
+[36mD[22:29:58,088] [102-CyclonMembership]CyclonMembership:[m Shuffle timer triggered
+[36mD[22:29:59,089] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@5081876f, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=14005, periodic=true, period=3000}
+[32mI[22:29:59,091] [300-BroadcastApp]BroadcastApp:[m Sending: c819f50e-86bb-4738-b2a6-34d57b44d060 - QEYKLLXEWXXASJSMVYOQ (20)
+[36mD[22:29:59,091] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@1f31aa81
+[36mD[22:29:59,092] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@1279b73d
+[32mI[22:29:59,092] [300-BroadcastApp]BroadcastApp:[m Received c819f50e-86bb-4738-b2a6-34d57b44d060 - QEYKLLXEWXXASJSMVYOQ (20) from 172.30.191.253:10102
+[36mD[22:30:00,087] [102-CyclonMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.cyclon.timers.ShuffleTimer@573fd637, consumer=protocols.membership.cyclon.CyclonMembership@53004808, triggerTime=14002, periodic=true, period=2000}
+[36mD[22:30:00,089] [102-CyclonMembership]CyclonMembership:[m Shuffle timer triggered
+[36mD[22:30:02,087] [102-CyclonMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.cyclon.timers.ShuffleTimer@573fd637, consumer=protocols.membership.cyclon.CyclonMembership@53004808, triggerTime=16002, periodic=true, period=2000}
+[36mD[22:30:02,087] [102-CyclonMembership]CyclonMembership:[m Shuffle timer triggered
+[36mD[22:30:02,089] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@5081876f, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=17005, periodic=true, period=3000}
+[32mI[22:30:02,089] [300-BroadcastApp]BroadcastApp:[m Sending: b2ea5d95-a1d2-43ee-b8c0-6750228a53a6 - BDJLMESKSCLAFQIPMZAZ (20)
+[36mD[22:30:02,090] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@17e3b080
+[36mD[22:30:02,090] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@7a7671fc
+[32mI[22:30:02,090] [300-BroadcastApp]BroadcastApp:[m Received b2ea5d95-a1d2-43ee-b8c0-6750228a53a6 - BDJLMESKSCLAFQIPMZAZ (20) from 172.30.191.253:10102
+[36mD[22:30:04,087] [102-CyclonMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.cyclon.timers.ShuffleTimer@573fd637, consumer=protocols.membership.cyclon.CyclonMembership@53004808, triggerTime=18002, periodic=true, period=2000}
+[36mD[22:30:04,088] [102-CyclonMembership]CyclonMembership:[m Shuffle timer triggered
+[36mD[22:30:06,558] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@5081876f, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=21474, periodic=true, period=3000}
+[36mD[22:30:06,558] [102-CyclonMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.cyclon.timers.ShuffleTimer@573fd637, consumer=protocols.membership.cyclon.CyclonMembership@53004808, triggerTime=20474, periodic=true, period=2000}
+[36mD[22:30:06,559] [102-CyclonMembership]CyclonMembership:[m Shuffle timer triggered
+[32mI[22:30:06,559] [300-BroadcastApp]BroadcastApp:[m Sending: 726b7e7c-3646-4562-9057-89bd4867acbe - RDTOVBOTFUXZEAMSFNFA (20)
+[36mD[22:30:06,559] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@2e3147a1
+[36mD[22:30:06,560] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@3e500396
+[32mI[22:30:06,560] [300-BroadcastApp]BroadcastApp:[m Received 726b7e7c-3646-4562-9057-89bd4867acbe - RDTOVBOTFUXZEAMSFNFA (20) from 172.30.191.253:10102
+[36mD[22:30:08,558] [102-CyclonMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.cyclon.timers.ShuffleTimer@573fd637, consumer=protocols.membership.cyclon.CyclonMembership@53004808, triggerTime=22474, periodic=true, period=2000}
+[36mD[22:30:08,560] [102-CyclonMembership]CyclonMembership:[m Shuffle timer triggered
+[36mD[22:30:09,558] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@5081876f, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=24474, periodic=true, period=3000}
+[32mI[22:30:09,559] [300-BroadcastApp]BroadcastApp:[m Sending: 58123ea9-14ef-46ec-85f3-4e110bb38b81 - SCXOELQZPCEYNWISCPDM (20)
+[36mD[22:30:09,560] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@3cd5c72c
+[36mD[22:30:09,561] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@4c3f2726
+[32mI[22:30:09,561] [300-BroadcastApp]BroadcastApp:[m Received 58123ea9-14ef-46ec-85f3-4e110bb38b81 - SCXOELQZPCEYNWISCPDM (20) from 172.30.191.253:10102
+[36mD[22:30:10,560] [102-CyclonMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.cyclon.timers.ShuffleTimer@573fd637, consumer=protocols.membership.cyclon.CyclonMembership@53004808, triggerTime=24475, periodic=true, period=2000}
+[36mD[22:30:10,562] [102-CyclonMembership]CyclonMembership:[m Shuffle timer triggered
+[36mD[22:30:12,558] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@5081876f, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=27474, periodic=true, period=3000}
+[32mI[22:30:12,559] [300-BroadcastApp]BroadcastApp:[m Sending: d7cd422b-6b99-4b55-bb98-63b1b885f3a9 - NDLGCAEMCNHUUOVJSQOJ (20)
+[36mD[22:30:12,559] [102-CyclonMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.cyclon.timers.ShuffleTimer@573fd637, consumer=protocols.membership.cyclon.CyclonMembership@53004808, triggerTime=26475, periodic=true, period=2000}
+[36mD[22:30:12,560] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@2ea20795
+[36mD[22:30:12,560] [102-CyclonMembership]CyclonMembership:[m Shuffle timer triggered
+[36mD[22:30:12,560] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@13a0a1c3
+[32mI[22:30:12,561] [300-BroadcastApp]BroadcastApp:[m Received d7cd422b-6b99-4b55-bb98-63b1b885f3a9 - NDLGCAEMCNHUUOVJSQOJ (20) from 172.30.191.253:10102
+[36mD[22:30:14,560] [102-CyclonMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.cyclon.timers.ShuffleTimer@573fd637, consumer=protocols.membership.cyclon.CyclonMembership@53004808, triggerTime=28475, periodic=true, period=2000}
+[36mD[22:30:14,561] [102-CyclonMembership]CyclonMembership:[m Shuffle timer triggered
+[36mD[22:30:15,559] [300-BroadcastApp]GenericProtocol:[m Handling event: TimerEvent{uuid=3, timer=protocols.apps.timers.BroadcastTimer@5081876f, consumer=protocols.apps.BroadcastApp@272113c4, triggerTime=30475, periodic=true, period=3000}
+[32mI[22:30:15,562] [300-BroadcastApp]BroadcastApp:[m Sending: f315bcb2-5282-4b4b-b0c4-a5c66d34c846 - BNTFYLNZODNZRXBSWDGC (20)
+[36mD[22:30:15,563] [200-Flood]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.IPCEvent@24cfd571
+[36mD[22:30:15,565] [300-BroadcastApp]GenericProtocol:[m Handling event: pt.unl.fct.di.novasys.babel.internal.NotificationEvent@5a90dbda
+[32mI[22:30:15,565] [300-BroadcastApp]BroadcastApp:[m Received f315bcb2-5282-4b4b-b0c4-a5c66d34c846 - BNTFYLNZODNZRXBSWDGC (20) from 172.30.191.253:10102
+[36mD[22:30:16,560] [102-CyclonMembership]GenericProtocol:[m Handling event: TimerEvent{uuid=2, timer=protocols.membership.cyclon.timers.ShuffleTimer@573fd637, consumer=protocols.membership.cyclon.CyclonMembership@53004808, triggerTime=30475, periodic=true, period=2000}
+[36mD[22:30:16,561] [102-CyclonMembership]CyclonMembership:[m Shuffle timer triggered
+[32mI[22:30:17,846] [Thread-1]Main:[m Goodbye
