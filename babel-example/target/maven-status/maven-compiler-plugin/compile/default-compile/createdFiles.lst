@@ -5,6 +5,7 @@ protocols/broadcast/utils/HashProducer.class
 protocols/broadcast/flood/messages/FloodMessage$1.class
 protocols/membership/common/notifications/NeighbourDown.class
 protocols/membership/full/timers/InfoTimer.class
+protocols/broadcast/eagerpush/messages/EagerPushMessage$1.class
 Main.class
 protocols/apps/timers/BroadcastTimer.class
 protocols/membership/cyclon/messages/ShuffleReply.class
@@ -19,6 +20,7 @@ protocols/membership/hyparview/HyParViewMembership.class
 protocols/membership/common/notifications/NeighbourUp.class
 protocols/membership/full/messages/SampleMessage.class
 utils/InterfaceToIp.class
+protocols/broadcast/eagerpush/messages/EagerPushMessage.class
 protocols/membership/cyclon/CyclonMembership.class
 protocols/broadcast/common/BroadcastRequest.class
 protocols/apps/timers/ExitTimer.class
@@ -26,6 +28,7 @@ protocols/broadcast/flood/FloodBroadcast.class
 protocols/membership/full/GossipBasedFullMembership.class
 protocols/membership/cyclon/messages/ShuffleRequest$1.class
 protocols/membership/cyclon/messages/ShuffleRequest.class
+protocols/broadcast/eagerpush/EagerPushBroadcast.class
 protocols/membership/cyclon/messages/ShuffleReply$1.class
 protocols/apps/timers/StartTimer.class
 protocols/apps/timers/StopTimer.class

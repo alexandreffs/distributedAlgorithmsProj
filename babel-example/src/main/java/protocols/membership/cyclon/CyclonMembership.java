@@ -340,9 +340,7 @@ public class CyclonMembership extends GenericProtocol {
             triggerNotification(new NeighbourDown(peer));
         }
 
-        // If your Babel version supports closing connections explicitly, you may also
-        // call:
-        // closeConnection(peer);
+        closeConnection(peer);
     }
 
     /*
@@ -356,7 +354,7 @@ public class CyclonMembership extends GenericProtocol {
         pending.remove(peer);
 
         // If connection succeeded to a peer not yet in view, add it
-        neigh.putIfAbsent(peer, 0);
+        neigh.put(peer, 0);
 
         if (connectedPeers.add(peer)) {
             triggerNotification(new NeighbourUp(peer));

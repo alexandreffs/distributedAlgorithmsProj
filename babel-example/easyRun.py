@@ -1,8 +1,15 @@
-
 import subprocess
+import time
 
 IP = "172.30.191.253"
 BASE_PATH = "/mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example"
+
+subprocess.run([
+    "wsl", "bash", "-c",
+    "pkill -f 'java -cp target/BabelExample.jar' || true"
+])
+
+time.sleep(1)
 
 cmd10101 = f'wsl bash -c "cd {BASE_PATH} && java -cp target/BabelExample.jar Main interface=eth0 port=10101"'
 cmd10102 = f'wsl bash -c "cd {BASE_PATH} && java -cp target/BabelExample.jar Main interface=eth0 port=10102 contact={IP}:10101"'

@@ -12,6 +12,7 @@
 /mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example/src/main/java/protocols/membership/full/messages/SampleMessage.java
 /mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example/src/main/java/protocols/membership/common/notifications/NeighbourUp.java
 /mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example/src/main/java/protocols/membership/cyclon/messages/ShuffleRequest.java
+/mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example/src/main/java/protocols/broadcast/eagerpush/messages/EagerPushMessage.java
 /mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example/src/main/java/protocols/membership/hyparview/messages/JoinMessage.java
 /mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example/src/main/java/utils/InterfaceToIp.java
 /mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example/src/main/java/Main.java
@@ -20,6 +21,7 @@
 /mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example/src/main/java/protocols/broadcast/flood/FloodBroadcast.java
 /mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example/src/main/java/protocols/broadcast/flood/messages/FloodMessage.java
 /mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example/src/main/java/protocols/membership/cyclon/CyclonMembership.java
+/mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example/src/main/java/protocols/broadcast/eagerpush/EagerPushBroadcast.java
 /mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example/src/main/java/protocols/membership/full/GossipBasedFullMembership.java
 /mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example/src/main/java/protocols/membership/cyclon/timers/ShuffleTimer.java
 /mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example/src/main/java/protocols/broadcast/common/DeliverNotification.java

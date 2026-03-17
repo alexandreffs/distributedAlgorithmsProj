@@ -2,6 +2,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import protocols.apps.BroadcastApp;
 import protocols.broadcast.flood.FloodBroadcast;
+import protocols.broadcast.eagerpush.EagerPushBroadcast;
 import protocols.membership.full.GossipBasedFullMembership;
 import protocols.membership.cyclon.CyclonMembership;
 import pt.unl.fct.di.novasys.babel.core.Babel;
@@ -51,23 +52,28 @@ public class Main {
         // Application
         BroadcastApp broadcastApp = new BroadcastApp(myself, props, FloodBroadcast.PROTOCOL_ID);
         // Broadcast Protocol
-        FloodBroadcast broadcast = new FloodBroadcast(props, myself);
+        // Flood Broadcast
+        FloodBroadcast floodBroadcast = new FloodBroadcast(props, myself);
+        // EagerPush Broadcast
+        EagerPushBroadcast eagerPushBroadcast = new EagerPushBroadcast(props, myself);
+
         // Membership Protocol
-        // GossipBasedFullMembership membership = new GossipBasedFullMembership(props,
-        // myself);
-        CyclonMembership membership = new CyclonMembership(props, myself);
+        // Full membership
+        GossipBasedFullMembership fullMembership = new GossipBasedFullMembership(props, myself);
+        // Cyclon Membership
+        CyclonMembership cyclonMmembership = new CyclonMembership(props, myself);
 
         // Register applications in babel
         babel.registerProtocol(broadcastApp);
-        babel.registerProtocol(broadcast);
-        babel.registerProtocol(membership);
+        babel.registerProtocol(floodBroadcast);
+        babel.registerProtocol(cyclonMmembership);
 
         // Init the protocols. This should be done after creating all protocols, since
         // there can be inter-protocol
         // communications in this step.
         broadcastApp.init(props);
-        broadcast.init(props);
-        membership.init(props);
+        floodBroadcast.init(props);
+        cyclonMmembership.init(props);
 
         // Start babel and protocol threads
         babel.start();
