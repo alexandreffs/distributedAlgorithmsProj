@@ -2,7 +2,16 @@ package protocols.membership.cyclon;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Random;
+import java.util.Set;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,18 +40,6 @@ public class CyclonMembership extends GenericProtocol {
     public static final short PROTOCOL_ID = 102;
     public static final String PROTOCOL_NAME = "CyclonMembership";
 
-    private final Host self;
-    private final Map<Host, Integer> neigh;
-    private final Set<Host> pending;
-    private final Set<Host> sample;
-
-    private final int maxN;
-    private final int shuffleTime;
-    private final int subsetSize;
-
-    private final Random rnd;
-    private final int channelId;
-
     public static final String PAR_MAX_NEIGH = "protocol.membership.cyclon.maxN";
     public static final String PAR_DEFAULT_MAX_NEIGH = "6";
 
@@ -52,13 +49,36 @@ public class CyclonMembership extends GenericProtocol {
     public static final String PAR_SUBSET_SIZE = "protocol.membership.cyclon.subset_size";
     public static final String PAR_DEFAULT_SUBSET_SIZE = "5";
 
+    private final Host self;
+
+    // Partial view: Host -> age
+    private final Map<Host, Integer> neigh;
+
+    // Peers to which we are currently trying to open an outgoing connection
+    private final Set<Host> pending;
+
+    // Stores the sample we sent to each peer, so that when the reply arrives
+    // we can do mergeViews(peerSample, mySampleSentToThatPeer)
+    private final Map<Host, Map<Host, Integer>> sentSamples;
+
+    // Tracks peers for which we already notified NeighbourUp
+    private final Set<Host> connectedPeers;
+
+    private final int maxN;
+    private final int shuffleTime;
+    private final int subsetSize;
+
+    private final Random rnd;
+    private final int channelId;
+
     public CyclonMembership(Properties props, Host self) throws IOException, HandlerRegistrationException {
         super(PROTOCOL_NAME, PROTOCOL_ID);
 
         this.self = self;
         this.neigh = new HashMap<>();
         this.pending = new HashSet<>();
-        this.sample = new HashSet<>();
+        this.sentSamples = new HashMap<>();
+        this.connectedPeers = new HashSet<>();
         this.rnd = new Random();
 
         this.maxN = Integer.parseInt(props.getProperty(PAR_MAX_NEIGH, PAR_DEFAULT_MAX_NEIGH));
@@ -76,14 +96,18 @@ public class CyclonMembership extends GenericProtocol {
 
         channelId = createChannel(TCPChannel.NAME, channelProps);
 
+        /* ---------------------- Register Message Serializers ---------------------- */
         registerMessageSerializer(channelId, ShuffleRequest.MSG_ID, ShuffleRequest.serializer);
         registerMessageSerializer(channelId, ShuffleReply.MSG_ID, ShuffleReply.serializer);
 
+        /* ---------------------- Register Message Handlers ------------------------- */
         registerMessageHandler(channelId, ShuffleRequest.MSG_ID, this::uponShuffleRequest, this::uponMsgFail);
         registerMessageHandler(channelId, ShuffleReply.MSG_ID, this::uponShuffleReply, this::uponMsgFail);
 
+        /* ---------------------- Register Timer Handlers -------------------------- */
         registerTimerHandler(ShuffleTimer.TIMER_ID, this::uponShuffleTimer);
 
+        /* ---------------------- Register Channel Event Handlers ------------------ */
         registerChannelEventHandler(channelId, OutConnectionDown.EVENT_ID, this::uponOutConnectionDown);
         registerChannelEventHandler(channelId, OutConnectionFailed.EVENT_ID, this::uponOutConnectionFailed);
         registerChannelEventHandler(channelId, OutConnectionUp.EVENT_ID, this::uponOutConnectionUp);
@@ -99,8 +123,14 @@ public class CyclonMembership extends GenericProtocol {
             try {
                 String[] hostElems = props.getProperty("contact").split(":");
                 Host contactHost = new Host(InetAddress.getByName(hostElems[0]), Short.parseShort(hostElems[1]));
-                pending.add(contactHost);
-                openConnection(contactHost);
+
+                if (!contactHost.equals(self)) {
+                    neigh.put(contactHost, 0);
+                    if (!pending.contains(contactHost)) {
+                        pending.add(contactHost);
+                        openConnection(contactHost);
+                    }
+                }
             } catch (Exception e) {
                 logger.error("Invalid contact: {}", props.getProperty("contact"));
                 e.printStackTrace();
@@ -111,86 +141,61 @@ public class CyclonMembership extends GenericProtocol {
         setupPeriodicTimer(new ShuffleTimer(), shuffleTime, shuffleTime);
     }
 
-    private void uponShuffleRequest(ShuffleRequest msg, Host from, short sourceProto, int channelId) {
-        logger.debug("Received {} from {}", msg, from);
+    /*
+     * --------------------------------- Messages ---------------------------------
+     */
 
-        Set<Host> temporarySample = randomSubset(subsetSize);
+    private void uponShuffleRequest(ShuffleRequest msg, Host from, short sourceProto, int channelId) {
+        logger.info("Received {} from {}", msg, from);
+
+        // Ensure sender is known in view
+        if (!from.equals(self)) {
+            if (!neigh.containsKey(from) && neigh.size() < maxN) {
+                neigh.put(from, 0);
+                tryConnectIfNeeded(from);
+            } else if (neigh.containsKey(from)) {
+                // if talked to this node, set age to 0
+                neigh.put(from, 0);
+            }
+        }
+
+        // Select random sample from my current view
+        Map<Host, Integer> temporarySample = randomSubset(subsetSize, from);
+
+        // Reply with that sample
         sendMessage(new ShuffleReply(temporarySample), from);
 
+        // Merge their sample into my view, preferring to replace entries from the
+        // sample I just sent
         mergeViews(msg.getSample(), temporarySample);
     }
 
     private void uponShuffleReply(ShuffleReply msg, Host from, short sourceProto, int channelId) {
-        logger.debug("Received {} from {}", msg, from);
-        mergeViews(msg.getSample(), sample);
-    }
+        logger.info("Received {} from {}", msg, from);
 
-    private void mergeViews(Set<Host> peerSample, Set<Host> mySample) {
-        for (Host h : peerSample) {
-            if (h.equals(self))
-                continue;
-
-            if (neigh.containsKey(h)) {
-                continue;
-            }
-
-            if (neigh.size() < maxN) {
-                neigh.put(h, 0);
-                triggerNotification(new NeighbourUp(h));
-                if (!pending.contains(h)) {
-                    pending.add(h);
-                    openConnection(h);
-                }
-            } else {
-                Host replacement = null;
-
-                for (Host x : mySample) {
-                    if (neigh.containsKey(x)) {
-                        replacement = x;
-                        break;
-                    }
-                }
-
-                if (replacement == null) {
-                    replacement = getRandom(neigh.keySet());
-                }
-
-                if (replacement != null) {
-                    neigh.remove(replacement);
-                    triggerNotification(new NeighbourDown(replacement));
-
-                    neigh.put(h, 0);
-                    triggerNotification(new NeighbourUp(h));
-
-                    if (!pending.contains(h)) {
-                        pending.add(h);
-                        openConnection(h);
-                    }
-                }
-            }
+        if (neigh.containsKey(from)) {
+            neigh.put(from, 0);
         }
-    }
 
-    private Host getRandom(Set<Host> hosts) {
-        if (hosts.isEmpty())
-            return null;
-
-        int idx = rnd.nextInt(hosts.size());
-        int i = 0;
-        for (Host h : hosts) {
-            if (i == idx)
-                return h;
-            i++;
+        Map<Host, Integer> mySample = sentSamples.remove(from);
+        if (mySample == null) {
+            logger.warn("Received ShuffleReply from {} but no stored sent sample exists", from);
+            return;
         }
-        return null;
+
+        mergeViews(msg.getSample(), mySample);
     }
 
     private void uponMsgFail(ProtoMessage msg, Host host, short destProto, Throwable throwable, int channelId) {
         logger.error("Message {} to {} failed, reason: {}", msg, host, throwable);
     }
 
+    /*
+     * --------------------------------- Timers -----------------------------------
+     */
+
     private void uponShuffleTimer(ShuffleTimer timer, long timerId) {
-        logger.debug("Shuffle timer triggered");
+        logger.info("Shuffle timer triggered. View: {}", neigh);
 
         if (neigh.isEmpty())
             return;
@@ -201,19 +206,22 @@ public class CyclonMembership extends GenericProtocol {
         if (oldest == null)
             return;
 
-        neigh.remove(oldest);
+        // Create sample excluding oldest
+        Map<Host, Integer> subset = randomSubset(Math.max(0, subsetSize - 1), oldest);
 
-        Set<Host> subset = randomSubset(subsetSize - 1);
+        // Store sample sent later for merge when reply arrives
+        Map<Host, Integer> mySample = new HashMap<>(subset);
+        mySample.put(self, 0);
 
-        sample.clear();
-        sample.addAll(subset);
+        sentSamples.put(oldest, new HashMap<>(mySample));
 
-        Set<Host> toSend = new HashSet<>(subset);
-        toSend.add(self);
-
-        sendMessage(new ShuffleRequest(toSend), oldest);
-        logger.debug("Sent ShuffleRequest to {} with sample {}", oldest, toSend);
+        sendMessage(new ShuffleRequest(mySample), oldest);
+        logger.info("Sent ShuffleRequest to {} with sample {}", oldest, mySample);
     }
+
+    /*
+     * --------------------------------- Cyclon Logic -----------------------------
+     */
 
     private void increaseAges() {
         List<Host> hosts = new ArrayList<>(neigh.keySet());
@@ -223,54 +231,169 @@ public class CyclonMembership extends GenericProtocol {
     }
 
     private Host pickOldest() {
-        Host oldest = null;
         int maxAge = -1;
+        List<Host> candidates = new ArrayList<>();
 
         for (Map.Entry<Host, Integer> entry : neigh.entrySet()) {
-            if (entry.getValue() > maxAge) {
-                maxAge = entry.getValue();
-                oldest = entry.getKey();
+            int age = entry.getValue();
+
+            if (age > maxAge) {
+                maxAge = age;
+                candidates.clear();
+                candidates.add(entry.getKey());
+            } else if (age == maxAge) {
+                candidates.add(entry.getKey());
             }
         }
-        return oldest;
+
+        if (candidates.isEmpty())
+            return null;
+
+        return candidates.get(rnd.nextInt(candidates.size()));
     }
 
-    private Set<Host> randomSubset(int size) {
-        List<Host> list = new ArrayList<>(neigh.keySet());
-        Collections.shuffle(list, rnd);
-        return new HashSet<>(list.subList(0, Math.min(size, list.size())));
+    private Map<Host, Integer> randomSubset(int size, Host exclude) {
+        List<Map.Entry<Host, Integer>> entries = new ArrayList<>(neigh.entrySet());
+
+        if (exclude != null) {
+            entries.removeIf(e -> e.getKey().equals(exclude));
+        }
+
+        Collections.shuffle(entries, rnd);
+
+        Map<Host, Integer> result = new HashMap<>();
+        int limit = Math.min(size, entries.size());
+
+        for (int i = 0; i < limit; i++) {
+            Map.Entry<Host, Integer> e = entries.get(i);
+            result.put(e.getKey(), e.getValue());
+        }
+
+        return result;
     }
+
+    private void mergeViews(Map<Host, Integer> peerSample, Map<Host, Integer> mySample) {
+        for (Map.Entry<Host, Integer> entry : peerSample.entrySet()) {
+            Host p = entry.getKey();
+            int age = entry.getValue();
+
+            if (p.equals(self))
+                continue;
+
+            // If already in view, keep the freshest age
+            if (neigh.containsKey(p)) {
+                if (age < neigh.get(p)) {
+                    neigh.put(p, age);
+                }
+                continue;
+            }
+
+            // If there is space, just add
+            if (neigh.size() < maxN) {
+                neigh.put(p, age);
+                tryConnectIfNeeded(p);
+                continue;
+            }
+
+            // Otherwise, replace an element that belongs to mySample, if possible
+            Host replacement = pickReplacementFromMySample(mySample);
+
+            if (replacement != null) {
+                removePeerFromView(replacement);
+                neigh.put(p, age);
+                tryConnectIfNeeded(p);
+            }
+        }
+    }
+
+    private Host pickReplacementFromMySample(Map<Host, Integer> mySample) {
+        List<Host> candidates = new ArrayList<>();
+
+        for (Host h : mySample.keySet()) {
+            if (!h.equals(self) && neigh.containsKey(h)) {
+                candidates.add(h);
+            }
+        }
+
+        if (candidates.isEmpty())
+            return null;
+
+        return candidates.get(rnd.nextInt(candidates.size()));
+    }
+
+    private void tryConnectIfNeeded(Host h) {
+        if (h.equals(self))
+            return;
+
+        if (!pending.contains(h) && !connectedPeers.contains(h)) {
+            pending.add(h);
+            openConnection(h);
+        }
+    }
+
+    private void removePeerFromView(Host peer) {
+        neigh.remove(peer);
+        pending.remove(peer);
+        sentSamples.remove(peer);
+
+        if (connectedPeers.remove(peer)) {
+            triggerNotification(new NeighbourDown(peer));
+        }
+
+        // If your Babel version supports closing connections explicitly, you may also
+        // call:
+        // closeConnection(peer);
+    }
+
+    /*
+     * ------------------------------- TCPChannel Events ---------------------------
+     */
 
     private void uponOutConnectionUp(OutConnectionUp event, int channelId) {
         Host peer = event.getNode();
-        logger.debug("Connection to {} is up", peer);
+        logger.info("Connection to {} is up", peer);
+
         pending.remove(peer);
 
-        if (!neigh.containsKey(peer)) {
-            neigh.put(peer, 0);
+        // If connection succeeded to a peer not yet in view, add it
+        neigh.putIfAbsent(peer, 0);
+
+        if (connectedPeers.add(peer)) {
             triggerNotification(new NeighbourUp(peer));
         }
     }
 
     private void uponOutConnectionDown(OutConnectionDown event, int channelId) {
         Host peer = event.getNode();
-        logger.debug("Connection to {} is down cause {}", peer, event.getCause());
+        logger.info("Connection to {} is down cause {}", peer, event.getCause());
 
-        if (neigh.remove(peer) != null) {
+        neigh.remove(peer);
+        pending.remove(peer);
+        sentSamples.remove(peer);
+
+        if (connectedPeers.remove(peer)) {
             triggerNotification(new NeighbourDown(peer));
         }
     }
 
     private void uponOutConnectionFailed(OutConnectionFailed<ProtoMessage> event, int channelId) {
-        logger.debug("Connection to {} failed cause: {}", event.getNode(), event.getCause());
-        pending.remove(event.getNode());
+        Host peer = event.getNode();
+        logger.info("Connection to {} failed cause: {}", peer, event.getCause());
+
+        pending.remove(peer);
+
+        // Optional policy:
+        // if connection never came up, remove from view
+        if (!connectedPeers.contains(peer)) {
+            neigh.remove(peer);
+        }
     }
 
     private void uponInConnectionUp(InConnectionUp event, int channelId) {
-        logger.trace("Connection from {} is up", event.getNode());
+        logger.info("Connection from {} is up", event.getNode());
     }
 
     private void uponInConnectionDown(InConnectionDown event, int channelId) {
-        logger.trace("Connection from {} is down, cause: {}", event.getNode(), event.getCause());
+        logger.info("Connection from {} is down, cause: {}", event.getNode(), event.getCause());
     }
 }
