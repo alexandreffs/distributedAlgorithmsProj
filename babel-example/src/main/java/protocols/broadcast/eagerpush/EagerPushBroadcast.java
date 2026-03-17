@@ -105,17 +105,21 @@ public class EagerPushBroadcast extends GenericProtocol {
 
         // First time only
         if (received.add(msg.getMid())) {
+            logger.info("FIRST TIME {} → will deliver and forward", msg.getMid());
+
+            logger.info("DELIVER {} to application", msg.getMid());
             triggerNotification(new DeliverNotification(msg.getMid(), msg.getSender(), msg.getContent()));
 
             Set<Host> targets = getRandomSubsetExcluding(neighbours, fanout, from);
 
-            logger.trace("Forwarding {} to {}", msg, targets);
+            logger.info("FORWARD {} to {} neighbours: {}", msg.getMid(), targets.size(), targets);
 
             for (Host h : targets) {
+                logger.info("Sending {} to {}", msg.getMid(), h);
                 sendMessage(msg, h);
             }
         } else {
-            logger.trace("Duplicate {} from {}, ignoring", msg, from);
+            logger.info("DUPLICATE {} from {} → ignored", msg.getMid(), from);
         }
     }
 

@@ -4,7 +4,7 @@ import pt.unl.fct.di.novasys.babel.generic.ProtoTimer;
 
 public class ShuffleTimer extends ProtoTimer {
 
-    public static final short TIMER_ID = 303;
+    public static final short TIMER_ID = 503;
 
     public ShuffleTimer() {
         super(TIMER_ID);

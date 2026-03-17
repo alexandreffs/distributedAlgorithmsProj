@@ -37,7 +37,7 @@ public class CyclonMembership extends GenericProtocol {
 
     private static final Logger logger = LogManager.getLogger(CyclonMembership.class);
 
-    public static final short PROTOCOL_ID = 102;
+    public static final short PROTOCOL_ID = 500;
     public static final String PROTOCOL_NAME = "CyclonMembership";
 
     public static final String PAR_MAX_NEIGH = "protocol.membership.cyclon.maxN";

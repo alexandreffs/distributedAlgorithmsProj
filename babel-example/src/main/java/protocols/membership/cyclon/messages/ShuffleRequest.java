@@ -11,7 +11,7 @@ import pt.unl.fct.di.novasys.network.data.Host;
 
 public class ShuffleRequest extends ProtoMessage {
 
-    public static final short MSG_ID = 301;
+    public static final short MSG_ID = 502;
 
     private final Map<Host, Integer> sample;
 

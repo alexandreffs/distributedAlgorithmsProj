@@ -50,30 +50,34 @@ public class Main {
         logger.info("Hello, I am {}", myself);
 
         // Application
-        BroadcastApp broadcastApp = new BroadcastApp(myself, props, FloodBroadcast.PROTOCOL_ID);
+        BroadcastApp broadcastApp = new BroadcastApp(myself, props, EagerPushBroadcast.PROTOCOL_ID);
+
         // Broadcast Protocol
         // Flood Broadcast
-        FloodBroadcast floodBroadcast = new FloodBroadcast(props, myself);
+        // FloodBroadcast broadcast = new FloodBroadcast(props, myself);
+
         // EagerPush Broadcast
-        EagerPushBroadcast eagerPushBroadcast = new EagerPushBroadcast(props, myself);
+        EagerPushBroadcast broadcast = new EagerPushBroadcast(props, myself);
 
         // Membership Protocol
         // Full membership
-        GossipBasedFullMembership fullMembership = new GossipBasedFullMembership(props, myself);
+        // GossipBasedFullMembership membership = new GossipBasedFullMembership(props,
+        // myself);
+
         // Cyclon Membership
-        CyclonMembership cyclonMmembership = new CyclonMembership(props, myself);
+        CyclonMembership membership = new CyclonMembership(props, myself);
 
         // Register applications in babel
         babel.registerProtocol(broadcastApp);
-        babel.registerProtocol(floodBroadcast);
-        babel.registerProtocol(cyclonMmembership);
+        babel.registerProtocol(broadcast);
+        babel.registerProtocol(membership);
 
         // Init the protocols. This should be done after creating all protocols, since
         // there can be inter-protocol
         // communications in this step.
         broadcastApp.init(props);
-        floodBroadcast.init(props);
-        cyclonMmembership.init(props);
+        broadcast.init(props);
+        membership.init(props);
 
         // Start babel and protocol threads
         babel.start();

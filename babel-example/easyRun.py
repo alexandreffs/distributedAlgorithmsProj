@@ -4,12 +4,15 @@ import time
 IP = "172.30.191.253"
 BASE_PATH = "/mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/babel-example"
 
-subprocess.run([
-    "wsl", "bash", "-c",
-    "pkill -f 'java -cp target/BabelExample.jar' || true"
-])
+compilar = False
 
-time.sleep(1)
+if compilar:
+    print("A compilar...")
+    result = subprocess.run(
+        ["wsl", "bash", "-c", f"cd {BASE_PATH} && mvn clean compile package -U"],
+        check=True
+    )
+    print("Compilação concluída")
 
 cmd10101 = f'wsl bash -c "cd {BASE_PATH} && java -cp target/BabelExample.jar Main interface=eth0 port=10101"'
 cmd10102 = f'wsl bash -c "cd {BASE_PATH} && java -cp target/BabelExample.jar Main interface=eth0 port=10102 contact={IP}:10101"'
