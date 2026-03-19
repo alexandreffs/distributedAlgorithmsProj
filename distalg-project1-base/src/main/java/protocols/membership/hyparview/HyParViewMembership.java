@@ -85,17 +85,14 @@ public class HyParViewMembership extends GenericProtocol {
 
         channelId = createChannel(TCPChannel.NAME, channelProps);
 
-        /* Serializers */
         registerMessageSerializer(channelId, JoinMessage.MSG_ID, JoinMessage.serializer);
         registerMessageSerializer(channelId, ForwardJoinMessage.MSG_ID, ForwardJoinMessage.serializer);
         registerMessageSerializer(channelId, DisconnectMessage.MSG_ID, DisconnectMessage.serializer);
 
-        /* Message handlers */
         registerMessageHandler(channelId, JoinMessage.MSG_ID, this::uponJoin, this::uponMsgFail);
         registerMessageHandler(channelId, ForwardJoinMessage.MSG_ID, this::uponForwardJoin, this::uponMsgFail);
         registerMessageHandler(channelId, DisconnectMessage.MSG_ID, this::uponDisconnect, this::uponMsgFail);
 
-        /* Channel event handlers */
         registerChannelEventHandler(channelId, OutConnectionUp.EVENT_ID, this::uponOutConnectionUp);
         registerChannelEventHandler(channelId, OutConnectionDown.EVENT_ID, this::uponOutConnectionDown);
         registerChannelEventHandler(channelId, OutConnectionFailed.EVENT_ID, this::uponOutConnectionFailed);
@@ -113,7 +110,7 @@ public class HyParViewMembership extends GenericProtocol {
                 Host contactNode = new Host(InetAddress.getByName(hostElems[0]), Short.parseShort(hostElems[1]));
 
                 if (!contactNode.equals(self)) {
-                    openConnection(contactNode);
+                    addNodeActiveView(contactNode);
                     sendMessage(new JoinMessage(self), contactNode);
                 }
 
@@ -124,10 +121,6 @@ public class HyParViewMembership extends GenericProtocol {
             }
         }
     }
-
-    /* -------------------------------------------------------------------------- */
-    /* Messages */
-    /* -------------------------------------------------------------------------- */
 
     private void uponJoin(JoinMessage msg, Host from, short sourceProto, int channelId) {
         Host newNode = msg.getNewNode();
@@ -149,7 +142,6 @@ public class HyParViewMembership extends GenericProtocol {
     private void uponForwardJoin(ForwardJoinMessage msg, Host from, short sourceProto, int channelId) {
         Host newNode = msg.getNewNode();
         int ttl = msg.getTimeToLive();
-        Host sender = msg.getSender();
 
         logger.info("Received {} from {}", msg, from);
 
@@ -163,7 +155,7 @@ public class HyParViewMembership extends GenericProtocol {
                 addNodePassiveView(newNode);
             }
 
-            Host n = getRandomNodeExcluding(activeView, sender);
+            Host n = getRandomNodeExcluding(activeView, from);
             if (n != null) {
                 sendMessage(new ForwardJoinMessage(newNode, ttl - 1, self), n);
             }
@@ -171,7 +163,7 @@ public class HyParViewMembership extends GenericProtocol {
     }
 
     private void uponDisconnect(DisconnectMessage msg, Host from, short sourceProto, int channelId) {
-        Host peer = msg.getPeer();
+        Host peer = from;
         logger.info("Received {} from {}", msg, from);
 
         if (activeView.remove(peer)) {
@@ -186,10 +178,6 @@ public class HyParViewMembership extends GenericProtocol {
     private void uponMsgFail(ProtoMessage msg, Host host, short destProto, Throwable throwable, int channelId) {
         logger.error("Message {} to {} failed, reason: {}", msg, host, throwable);
     }
-
-    /* -------------------------------------------------------------------------- */
-    /* Auxiliares */
-    /* -------------------------------------------------------------------------- */
 
     private void dropRandomElementFromActiveView() {
         Host n = getRandomNode(activeView);
@@ -273,10 +261,6 @@ public class HyParViewMembership extends GenericProtocol {
         return list.get(rnd.nextInt(list.size()));
     }
 
-    /* -------------------------------------------------------------------------- */
-    /* Channel events */
-    /* -------------------------------------------------------------------------- */
-
     private void uponOutConnectionUp(OutConnectionUp event, int channelId) {
         Host peer = event.getNode();
         logger.info("Connection to {} is up", peer);
@@ -317,6 +301,15 @@ public class HyParViewMembership extends GenericProtocol {
     }
 
     private void uponInConnectionDown(InConnectionDown event, int channelId) {
-        logger.info("Connection from {} is down, cause: {}", event.getNode(), event.getCause());
+        Host peer = event.getNode();
+        logger.info("Connection from {} is down, cause: {}", peer, event.getCause());
+
+        if (activeView.remove(peer)) {
+            addNodePassiveView(peer);
+
+            if (connectedPeers.remove(peer)) {
+                triggerNotification(new NeighbourDown(peer));
+            }
+        }
     }
 }
