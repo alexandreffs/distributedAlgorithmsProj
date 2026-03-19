@@ -67,13 +67,15 @@ public class EagerPushBroadcast extends GenericProtocol {
         // Nothing to do
     }
 
+    // Upon receiving the channelId from the membership, register our own callbacks
+    // and serializers
     private void uponChannelCreated(ChannelCreated notification, short sourceProto) {
         int cId = notification.getChannelId();
-
+        // Allows this protocol to receive events from this channel.
         registerSharedChannel(cId);
-
+        /*---------------------- Register Message Serializers ---------------------- */
         registerMessageSerializer(cId, EagerPushMessage.MSG_ID, EagerPushMessage.serializer);
-
+        /*---------------------- Register Message Handlers -------------------------- */
         try {
             registerMessageHandler(cId, EagerPushMessage.MSG_ID, this::uponEagerPushMessage, this::uponMsgFail);
         } catch (HandlerRegistrationException e) {
@@ -138,14 +140,14 @@ public class EagerPushBroadcast extends GenericProtocol {
     private void uponNeighbourUp(NeighbourUp notification, short sourceProto) {
         for (Host h : notification.getNeighbours()) {
             neighbours.add(h);
-            logger.info("New neighbour: {}", h);
+            logger.info("New neighbour: " + h);
         }
     }
 
     private void uponNeighbourDown(NeighbourDown notification, short sourceProto) {
         for (Host h : notification.getNeighbours()) {
             neighbours.remove(h);
-            logger.info("Neighbour down: {}", h);
+            logger.info("Neighbour down: " + h);
         }
     }
 }

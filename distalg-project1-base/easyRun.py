@@ -4,7 +4,7 @@ import time
 IP = "172.30.191.253"
 BASE_PATH = "/mnt/c/Users/alexa/Documents/GitHub/distributedAlgorithmsProj/distalg-project1-base"
 
-compilar = True
+compilar = False
 
 if compilar:
     print("A compilar...")

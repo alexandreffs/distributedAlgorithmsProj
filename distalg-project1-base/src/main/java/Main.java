@@ -8,6 +8,7 @@ import protocols.apps.BroadcastApp;
 import protocols.broadcast.flood.FloodBroadcast;
 import protocols.broadcast.eagerpush.EagerPushBroadcast;
 import protocols.membership.full.GossipBasedFullMembership;
+import protocols.membership.hyparview.HyParViewMembership;
 import protocols.membership.cyclon.CyclonMembership;
 import pt.unl.fct.di.novasys.babel.core.Babel;
 import pt.unl.fct.di.novasys.network.data.Host;
@@ -52,26 +53,35 @@ public class Main {
 
         // Application
         BroadcastApp broadcastApp = new BroadcastApp(myself, props, FloodBroadcast.PROTOCOL_ID);
+
         // Broadcast Protocol
-        // FloodBroadcast broadcast = new FloodBroadcast(props, myself);
-        EagerPushBroadcast broadcast = new EagerPushBroadcast(props, myself);
+        // Flood Broadcast
+        FloodBroadcast broadcast = new FloodBroadcast(props, myself);
+
+        // EagerPush Broadcast
+        // EagerPushBroadcast broadcast = new EagerPushBroadcast(props, myself);
+
         // Membership Protocol
-        // GossipBasedFullMembership fullMembership = new
+        // GossipBasedFullMembership membership = new
         // GossipBasedFullMembership(props, myself);
+
         // Cyclon Protocol
-        CyclonMembership cyclonMembership = new CyclonMembership(props, myself);
+        // CyclonMembership membership = new CyclonMembership(props, myself);
+
+        // HyParView
+        HyParViewMembership membership = new HyParViewMembership(props, myself);
 
         // Register applications in babel
         babel.registerProtocol(broadcastApp);
         babel.registerProtocol(broadcast);
-        babel.registerProtocol(cyclonMembership);
+        babel.registerProtocol(membership);
 
         // Init the protocols. This should be done after creating all protocols, since
         // there can be inter-protocol
         // communications in this step.
         broadcastApp.init(props);
         broadcast.init(props);
-        cyclonMembership.init(props);
+        membership.init(props);
 
         // Start babel and protocol threads
         babel.start();
