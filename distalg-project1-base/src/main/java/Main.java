@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 import protocols.apps.BroadcastApp;
 import protocols.broadcast.flood.FloodBroadcast;
+import protocols.broadcast.hybrid.HybridGossipBroadcast;
 import protocols.broadcast.eagerpush.EagerPushBroadcast;
 import protocols.membership.full.GossipBasedFullMembership;
 import protocols.membership.hyparview.HyParViewMembership;
@@ -52,24 +53,27 @@ public class Main {
         logger.info("Hello, I am {}", myself);
 
         // Application
-        BroadcastApp broadcastApp = new BroadcastApp(myself, props, FloodBroadcast.PROTOCOL_ID);
+        BroadcastApp broadcastApp = new BroadcastApp(myself, props, HybridGossipBroadcast.PROTOCOL_ID);
 
         // Broadcast Protocol
         // Flood Broadcast
-        FloodBroadcast broadcast = new FloodBroadcast(props, myself);
+        // FloodBroadcast broadcast = new FloodBroadcast(props, myself);
 
         // EagerPush Broadcast
         // EagerPushBroadcast broadcast = new EagerPushBroadcast(props, myself);
+
+        // Hybrid Broadcast
+        HybridGossipBroadcast broadcast = new HybridGossipBroadcast(props, myself);
 
         // Membership Protocol
         // GossipBasedFullMembership membership = new
         // GossipBasedFullMembership(props, myself);
 
         // Cyclon Protocol
-        // CyclonMembership membership = new CyclonMembership(props, myself);
+        CyclonMembership membership = new CyclonMembership(props, myself);
 
         // HyParView
-        HyParViewMembership membership = new HyParViewMembership(props, myself);
+        // HyParViewMembership membership = new HyParViewMembership(props, myself);
 
         // Register applications in babel
         babel.registerProtocol(broadcastApp);
