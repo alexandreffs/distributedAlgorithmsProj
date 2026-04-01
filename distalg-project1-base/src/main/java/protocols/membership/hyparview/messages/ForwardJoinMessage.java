@@ -12,14 +12,12 @@ public class ForwardJoinMessage extends ProtoMessage {
     public static final short MSG_ID = 602;
 
     private final Host newNode;
-    private final int timeToLive;
-    private final Host sender;
+    private final int ttl;
 
-    public ForwardJoinMessage(Host newNode, int timeToLive, Host sender) {
+    public ForwardJoinMessage(Host newNode, int ttl) {
         super(MSG_ID);
         this.newNode = newNode;
-        this.timeToLive = timeToLive;
-        this.sender = sender;
+        this.ttl = ttl;
     }
 
     public Host getNewNode() {
@@ -27,32 +25,29 @@ public class ForwardJoinMessage extends ProtoMessage {
     }
 
     public int getTimeToLive() {
-        return timeToLive;
-    }
-
-    public Host getSender() {
-        return sender;
+        return ttl;
     }
 
     @Override
     public String toString() {
-        return "ForwardJoinMessage{newNode=" + newNode + ", ttl=" + timeToLive + ", sender=" + sender + "}";
+        return "ForwardJoinMessage{" +
+                "newNode=" + newNode +
+                ", ttl=" + ttl +
+                '}';
     }
 
-    public static ISerializer<ForwardJoinMessage> serializer = new ISerializer<>() {
+    public static final ISerializer<ForwardJoinMessage> serializer = new ISerializer<>() {
         @Override
         public void serialize(ForwardJoinMessage msg, ByteBuf out) throws IOException {
             Host.serializer.serialize(msg.newNode, out);
-            out.writeInt(msg.timeToLive);
-            Host.serializer.serialize(msg.sender, out);
+            out.writeInt(msg.ttl);
         }
 
         @Override
         public ForwardJoinMessage deserialize(ByteBuf in) throws IOException {
             Host newNode = Host.serializer.deserialize(in);
             int ttl = in.readInt();
-            Host sender = Host.serializer.deserialize(in);
-            return new ForwardJoinMessage(newNode, ttl, sender);
+            return new ForwardJoinMessage(newNode, ttl);
         }
     };
 }

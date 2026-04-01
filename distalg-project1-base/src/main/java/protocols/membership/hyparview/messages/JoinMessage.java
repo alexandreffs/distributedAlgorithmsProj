@@ -24,10 +24,12 @@ public class JoinMessage extends ProtoMessage {
 
     @Override
     public String toString() {
-        return "JoinMessage{newNode=" + newNode + "}";
+        return "JoinMessage{" +
+                "newNode=" + newNode +
+                '}';
     }
 
-    public static ISerializer<JoinMessage> serializer = new ISerializer<>() {
+    public static final ISerializer<JoinMessage> serializer = new ISerializer<>() {
         @Override
         public void serialize(JoinMessage msg, ByteBuf out) throws IOException {
             Host.serializer.serialize(msg.newNode, out);

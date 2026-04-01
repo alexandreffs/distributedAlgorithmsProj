@@ -53,24 +53,23 @@ public class Main {
         logger.info("Hello, I am {}", myself);
 
         // Application
-        BroadcastApp broadcastApp = new BroadcastApp(myself, props, HybridGossipBroadcast.PROTOCOL_ID);
+        BroadcastApp broadcastApp = new BroadcastApp(myself, props, FloodBroadcast.PROTOCOL_ID);
 
         // Broadcast Protocol
         // Flood Broadcast
-        // FloodBroadcast broadcast = new FloodBroadcast(props, myself);
+        FloodBroadcast broadcast = new FloodBroadcast(props, myself);
 
         // EagerPush Broadcast
         // EagerPushBroadcast broadcast = new EagerPushBroadcast(props, myself);
 
         // Hybrid Broadcast
-        HybridGossipBroadcast broadcast = new HybridGossipBroadcast(props, myself);
+        // HybridGossipBroadcast broadcast = new HybridGossipBroadcast(props, myself);
 
         // Membership Protocol
-        // GossipBasedFullMembership membership = new
-        // GossipBasedFullMembership(props, myself);
+        GossipBasedFullMembership membership = new GossipBasedFullMembership(props, myself);
 
         // Cyclon Protocol
-        CyclonMembership membership = new CyclonMembership(props, myself);
+        // CyclonMembership membership = new CyclonMembership(props, myself);
 
         // HyParView
         // HyParViewMembership membership = new HyParViewMembership(props, myself);
