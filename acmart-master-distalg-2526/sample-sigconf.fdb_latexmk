@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex sample-sigconf"] 1774798674.23902 "sample-sigconf.aux" "sample-sigconf.bbl" "sample-sigconf" 1774798842.54767 0
+["bibtex sample-sigconf"] 1775341371.00609 "sample-sigconf.aux" "sample-sigconf.bbl" "sample-sigconf" 1775341374.84889 0
   "./ACM-Reference-Format.bst" 1603355844 85327 68580d41bd279ee2c59d376cb377f3d6 ""
   "./sample-base.bib" 1603355846 53269 2c33053d47f91b7868abb19f5260a663 ""
-  "sample-sigconf.aux" 1774798841 6882 353da733f4890e9679526b1f315340ac "pdflatex"
+  "sample-sigconf.aux" 1775341373 6882 84bded6944c90bf8efe08edfb76bc340 "pdflatex"
   (generated)
   "sample-sigconf.bbl"
   "sample-sigconf.blg"
   (rewritten before read)
-["pdflatex"] 1774798838.86405 "c:/Users/kaime/Desktop/repos/distributedAlgorithmsProj/acmart-master-distalg-2526/sample-sigconf.tex" "sample-sigconf.pdf" "sample-sigconf" 1774798842.54889 0
+["pdflatex"] 1775341371.38489 "c:/Users/kaime/Desktop/repos/distributedAlgorithmsProj/acmart-master-distalg-2526/sample-sigconf.tex" "sample-sigconf.pdf" "sample-sigconf" 1775341374.84977 0
   "C:/Users/kaime/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1774798671 186066 c797610d3c7aadc509276bf4bcd8a24b ""
   "C:/Users/kaime/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm0700.pk" 1774798017 17000 a4699e5af852ffcd117631e972dea9e4 ""
   "C:/Users/kaime/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecrm0900.pk" 1774798015 21356 dd645168f5e28b3479cb69dc3bfa3357 ""
@@ -208,13 +208,13 @@
   "C:/Users/kaime/AppData/Local/Programs/MiKTeX/tex/latex/xkeyval/xkeyval.sty" 1656236919 4937 4ce600ce9bd4ec84d0250eb6892fcf4f ""
   "C:/Users/kaime/AppData/Local/Programs/MiKTeX/tex/latex/xstring/xstring.sty" 1693735632 123 a302f2c651a95033260db60e51527ae8 ""
   "acmart.cls" 1603355846 99846 0deb10bf89eced34db892719186de5df ""
-  "c:/Users/kaime/Desktop/repos/distributedAlgorithmsProj/acmart-master-distalg-2526/sample-sigconf.tex" 1774798837 23882 081e8423b540c4d608ec74f8fd7b9be2 ""
-  "comment.cut" 1774798841 64 0754424945249fbfae64d8991d811e64 "pdflatex"
+  "c:/Users/kaime/Desktop/repos/distributedAlgorithmsProj/acmart-master-distalg-2526/sample-sigconf.tex" 1775341366 28235 d6b374e98b94056929d5b7c870379a9f ""
+  "comment.cut" 1775341373 64 0754424945249fbfae64d8991d811e64 "pdflatex"
   "sample-franklin.png" 1603357472 95030 b5b117690b64777baa16f25a8c628f74 ""
-  "sample-sigconf.aux" 1774798841 6882 353da733f4890e9679526b1f315340ac "pdflatex"
-  "sample-sigconf.bbl" 1774798674 21555 87e6bd15844d142508c233dfcc85eed1 "bibtex sample-sigconf"
-  "sample-sigconf.out" 1774798841 3087 48c7c3fea0c8bb760a8a7191b9c6f45b "pdflatex"
-  "sample-sigconf.tex" 1774798837 23882 081e8423b540c4d608ec74f8fd7b9be2 ""
+  "sample-sigconf.aux" 1775341373 6882 84bded6944c90bf8efe08edfb76bc340 "pdflatex"
+  "sample-sigconf.bbl" 1775341371 21555 87e6bd15844d142508c233dfcc85eed1 "bibtex sample-sigconf"
+  "sample-sigconf.out" 1775341373 3087 48c7c3fea0c8bb760a8a7191b9c6f45b "pdflatex"
+  "sample-sigconf.tex" 1775341366 28235 d6b374e98b94056929d5b7c870379a9f ""
   (generated)
   "comment.cut"
   "sample-sigconf.aux"

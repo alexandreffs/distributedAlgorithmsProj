@@ -73,7 +73,7 @@
 %%
 %% The "title" command has an optional parameter,
 %% allowing the author to define a "short title" to be used in page headers.
-\title{Your Amazing Title that Will Generate Big Expectations}
+\title{Evaluating Membership and Broadcast Protocol Combinations in Gossip-Based Systems}
 
 %%
 %% The "author" command and its associated commands are used to define
@@ -81,21 +81,21 @@
 %% Of note is the shared affiliation of the first two authors, and the
 %% "authornote" and "authornotemark" commands
 %% used to denote shared contribution to the research.
-\author{Endi--Mon}
+\author{Miguel Mestre}
 \authornote{Student number 66666. Endi was quite lazy and did not did much on this.}
 \email{endi@lazzy.net}
 \affiliation{%
   \institution{MEI, DI, FCT, UNL}
 }
 
-\author{Void Emperor}
+\author{Alexandre Santos}
 \authornote{Student number 77777. Void did stress a lot about this project, he made lots of phone calls and pushed hard for people to work.}
 \email{lvoid@stress.in}
 \affiliation{%
   \institution{MEI, DI, FCT, UNL}
 }
 
-\author{B. Marbles}
+\author{Nelson}
 \authornote{Student number 11111. Marbles did not understood the assignment but he did use an LLM to make a song related with the project.}
 \email{marbles@cool.se}
 \affiliation{%
@@ -108,18 +108,15 @@
 %% other information printed in the page headers. This command allows
 %% the author to define a more concise list
 %% of authors' names for this purpose.
-\renewcommand{\shortauthors}{Endi, Void, and Marbles.}
+\renewcommand{\shortauthors}{Miguel, Alexandre, and Nelson.}
 
 %%
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-  A clear and well-documented \LaTeX\ document is presented as an
-  article formatted for publication by ACM in a conference proceedings
-  or journal publication. Based on the ``acmart'' document class, this
-  article presents and explains many of the common variations, as well
-  as many of the formatting elements an author may use in the
-  preparation of the documentation of their work.
+  Gossip-based protocols have emerged as an effective approach to implement scalable and resilient broadcast mechanisms in distributed systems. In such systems, nodes rely on membership protocols to maintain partial views of the network, which directly influence the efficiency and reliability of message dissemination. The performance of gossip-based broadcast depends on the interaction between membership and broadcast strategies, particularly under varying system conditions.
+
+Several approaches can be used to construct and maintain these overlays, each offering different trade-offs in terms of reliability, latency, and communication overhead. In this paper, we implement and experimentally evaluate combinations of membership protocols, namely Cyclon and HyParView, with broadcast protocols such as Flood and Eager-Push Gossip, as well as a custom-designed gossip-based solution. Our results show that different protocol combinations exhibit distinct performance characteristics, highlighting trade-offs between reliability and latency, and demonstrating that the choice of membership protocol plays a key role in determining the effectiveness of broadcast mechanisms.
 \end{abstract}
 
 
@@ -129,23 +126,73 @@
 \maketitle
 
 \section{Introduction}
-ACM's consolidated article template, introduced in 2017, provides a
-consistent \LaTeX\ style for use across ACM publications, and
-incorporates accessibility and metadata-extraction functionality
-necessary for future Digital Library endeavors. Numerous ACM and
-SIG-specific \LaTeX\ templates have been examined, and their unique
-features incorporated into this single new template.
 
-If you are new to publishing with ACM, this document is a valuable
-guide to the process of preparing your work for publication. If you
-have published with ACM before, this document provides insight and
-instruction into more recent changes to the article template.
+Modern distributed systems often need to send a message to all nodes
+participating in the system, an operation known as broadcast. The simplest
+way to do this is flooding, where every node that receives a message
+immediately forwards it to all of its neighbors. This guarantees that every
+node will eventually receive the message, but it comes at a steep cost.
+Because every node forwards to every neighbor, the total number of messages
+in the network grows very quickly as the system scales, filling up network
+links and forcing each node to spend time processing and discarding large
+numbers of duplicate messages. This extra work does not go unnoticed: the
+congestion and processing overhead introduced by flooding ultimately manifests
+as increased end-to-end latency, meaning messages take longer to arrive not
+because the network is slow, but because it is overloaded.
 
-The ``\verb|acmart|'' document class can be used to prepare articles
-for any ACM publication --- conference or journal, and for any stage
-of publication, from review to final ``camera-ready'' copy, to the
-author's own version, with {\itshape very} few changes to the source.
+A more efficient alternative is gossip-based broadcast, where instead of
+forwarding to every neighbor, each node picks only a small random subset of
+neighbors to forward to. The size of this subset is controlled by a parameter
+called the fanout. At first glance it might seem that reducing the number of
+forwarding targets would significantly hurt reliability, but in practice,
+if the fanout is well calibrated, the message still reaches the vast majority
+of nodes in the system. The core argument is therefore that the overhead
+flooding introduces does not meaningfully improve reliability over a well
+tuned gossip protocol, it only adds congestion and latency.
 
+For gossip to work well, nodes need a way to know which other nodes exist in
+the system and to maintain a set of neighbors to gossip with. This is the
+role of an overlay network protocol. In this work we consider two such
+protocols: Cyclon and HyParView. Cyclon maintains a single list of neighbors
+and periodically shuffles it with other nodes to keep the view random and
+fresh. It is simple and works well in stable conditions. HyParView takes a
+different approach and maintains two lists: an active view of neighbors that
+are currently in use, and a passive view of backup neighbors that are kept
+in reserve. When an active neighbor leaves or stops responding, HyParView
+can immediately replace it with a node from the passive view without waiting
+for the next maintenance cycle. This makes HyParView more resilient when
+nodes frequently join and leave the network, a condition known as churn.
+In scenarios with little churn however, the simpler design of Cyclon is
+expected to introduce slightly less overhead and therefore slightly lower
+latency.
+
+On top of these overlay protocols we implement a hybrid gossip broadcast
+protocol. Rather than always forwarding the full message to neighbors, our
+protocol splits neighbors into two groups per message. A small subset called
+eager targets receives the full message right away. Another subset called
+lazy targets receives only a small announcement indicating that the sender
+has a message available. If a lazy target has not yet seen that message, it
+can request the full content, effectively pulling it on demand. This reduces
+unnecessary full message transmissions when nodes have already received the
+message through another path. Additionally, our protocol monitors how many
+duplicate messages it is receiving and uses this information to dynamically
+adjust the eager fanout over time, growing it when too few nodes seem to be
+receiving messages and shrinking it when too many duplicates are observed.
+We expect this adaptive behavior to reduce message overhead compared to a
+static eager push approach, though the dynamic adjustment of the fanout may
+occasionally cause short periods of reduced delivery reliability.
+
+In this paper we experimentally study these three aspects: whether flooding
+truly introduces more latency than gossip for similar reliability levels,
+whether HyParView outperforms Cyclon under high churn while Cyclon holds
+an edge in stable networks, and whether our hybrid adaptive protocol
+improves on static gossip in terms of overhead while remaining competitive
+in reliability. The remainder of this paper is organized as follows.
+Section~\ref{sec:related} discusses related work on overlay networks and
+gossip protocols. Section~\ref{sec:implementation} describes our
+implementation in detail. Section~\ref{sec:evaluation} presents and
+discusses our experimental results. Finally,
+Section~\ref{sec:conclusions} concludes the paper.
 \section{Template Overview}
 As noted in the introduction, the ``\verb|acmart|'' document class can
 be used to prepare many different kinds of documentation --- a
