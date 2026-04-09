@@ -20,14 +20,14 @@ set -uo pipefail
 SHARED_DIR="/home/distalg06"
 
 # Path to your JAR file (relative to SHARED_DIR, adjust filename as needed)
-JAR_PATH="${SHARED_DIR}/jars/your-project.jar"
+JAR_PATH="${SHARED_DIR}/distalg-project1-base/target/DistAlg.jar"
 
 # TCP port all processes will listen on
 BABEL_PORT="5000"
 
 # Name of the contact argument your protocol expects (e.g. "HyParView.contact",
 # "Membership.contact", or whatever your implementation uses)
-CONTACT_PARAM="YourProtocol.contact"
+CONTACT_PARAM="contact"
 
 # Value passed as the contact argument to the FIRST node (the bootstrap node).
 # If your implementation expects no contact argument at all for the first node,
