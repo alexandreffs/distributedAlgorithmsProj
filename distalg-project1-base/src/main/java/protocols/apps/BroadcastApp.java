@@ -144,9 +144,6 @@ public class BroadcastApp extends GenericProtocol {
 		this.fileBroadcastTrigger = props.getProperty(PAR_FILE_BROADCAST_TRIGGER, DEFAULT_FILE_BROADCAST_TRIGGER);
 		this.fileFailureTrigger = props.getProperty(PAR_FILE_FAILURE_TRIGGER, DEFAULT_FILE_FAILURE_TRIGGER);
 
-		this.nodeLabel = self.toString();
-		logger.info("nodeLabel: " + this.nodeLabel);
-
 		logger.info(PAR_FILE_FOLDER_TARGET + ": " + this.basePath);
 		logger.info(PAR_FILE_BROADCAST_TRIGGER + ": " + this.fileBroadcastTrigger);
 		logger.info(PAR_FILE_FAILURE_TRIGGER + ": " + this.fileFailureTrigger);
@@ -164,11 +161,6 @@ public class BroadcastApp extends GenericProtocol {
 		this.executing = new AtomicBoolean(false);
 	}
 
-	private String getTimeStamp() {
-		return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-				.format(new java.util.Date());
-	}
-
 	private void uponBroadcastTimer(BroadcastTimer broadcastTimer, long timerId) {
 		if (!this.executing.get())
 			return; // If we are not broadcasting do nothing...
@@ -179,7 +171,7 @@ public class BroadcastApp extends GenericProtocol {
 		byte[] payload = toSend.getBytes(StandardCharsets.US_ASCII);
 
 		BroadcastRequest request = new BroadcastRequest(UUID.randomUUID(), self, payload);
-		logger.info(getTimeStamp() + " " + nodeLabel + " SEND " + self.toString() + "::" + request.getMsgId() + " "
+		logger.info(getTimeStamp() + " " + self + " SEND " + self + "::" + request.getMsgId() + " "
 				+ request.getMsg().length);
 		// And send it to the dissemination protocol
 		sendRequest(request, broadcastProtoId);
@@ -202,9 +194,14 @@ public class BroadcastApp extends GenericProtocol {
 		System.exit(0);
 	}
 
+	private String getTimeStamp() {
+		return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+				.format(new java.util.Date());
+	}
+
 	private void uponDeliver(DeliverNotification msg, short sourceProto) {
-		logger.info(getTimeStamp() + " " + nodeLabel + " RECV " + msg.getSender().toString() + "::" + msg.getMsgId()
-				+ " " + msg.getMsg().length);
+		logger.info(getTimeStamp() + " " + self + " RECV " + msg.getSender() + "::" + msg.getMsgId() + " "
+				+ msg.getMsg().length);
 
 	}
 
@@ -396,6 +393,11 @@ public class BroadcastApp extends GenericProtocol {
 // this.executing = new AtomicBoolean(false);
 // }
 
+// private String getTimeStamp() {
+// return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+// .format(new java.util.Date());
+// }
+
 // private void uponBroadcastTimer(BroadcastTimer broadcastTimer, long timerId)
 // {
 // if (!this.executing.get())
@@ -408,8 +410,9 @@ public class BroadcastApp extends GenericProtocol {
 
 // BroadcastRequest request = new BroadcastRequest(UUID.randomUUID(), self,
 // payload);
-// logger.info(getTimeStamp() + " " + nodeLabel + " SEND " + request.getMsgId()
-// + " " + request.getMsg().length);
+// logger.info(getTimeStamp() + " " + nodeLabel + " SEND " + self.toString() +
+// "::" + request.getMsgId() + " "
+// + request.getMsg().length);
 // // And send it to the dissemination protocol
 // sendRequest(request, broadcastProtoId);
 // }
@@ -435,14 +438,10 @@ public class BroadcastApp extends GenericProtocol {
 // System.exit(0);
 // }
 
-// private String getTimeStamp() {
-// return new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-// .format(new java.util.Date());
-// }
-
 // private void uponDeliver(DeliverNotification msg, short sourceProto) {
-// logger.info(getTimeStamp() + " " + nodeLabel + " RECV " + msg.getMsgId() + "
-// " + msg.getMsg().length);
+// logger.info(getTimeStamp() + " " + nodeLabel + " RECV " +
+// msg.getSender().toString() + "::" + msg.getMsgId()
+// + " " + msg.getMsg().length);
 
 // }
 

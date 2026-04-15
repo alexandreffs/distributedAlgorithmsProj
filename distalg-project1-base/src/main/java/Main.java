@@ -53,14 +53,14 @@ public class Main {
         logger.info("Hello, I am {}", myself);
 
         // Application
-        BroadcastApp broadcastApp = new BroadcastApp(myself, props, FloodBroadcast.PROTOCOL_ID);
+        BroadcastApp broadcastApp = new BroadcastApp(myself, props, EagerPushBroadcast.PROTOCOL_ID);
 
         // Broadcast Protocol
         // Flood Broadcast
-        FloodBroadcast broadcast = new FloodBroadcast(props, myself);
+        // FloodBroadcast broadcast = new FloodBroadcast(props, myself);
 
         // EagerPush Broadcast
-        // EagerPushBroadcast broadcast = new EagerPushBroadcast(props, myself);
+        EagerPushBroadcast broadcast = new EagerPushBroadcast(props, myself);
 
         // Hybrid Broadcast
         // HybridGossipBroadcast broadcast = new HybridGossipBroadcast(props, myself);

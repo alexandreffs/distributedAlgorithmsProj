@@ -84,7 +84,7 @@ public class MessageDeliveryStatistics {
 			for (Path nodeDir : nodeDirs) {
 				if (!Files.isDirectory(nodeDir))
 					continue;
-				try (DirectoryStream<Path> files = Files.newDirectoryStream(nodeDir, "message.log")) {
+				try (DirectoryStream<Path> files = Files.newDirectoryStream(nodeDir, "*-message.log")) {
 					for (Path f : files) {
 						logFiles.add(f);
 					}
@@ -111,7 +111,16 @@ public class MessageDeliveryStatistics {
 
 					String[] elements = l.split(" ");
 
-					UUID msgID = UUID.fromString(elements[5].split("::")[1]);
+					String rawId = elements[5];
+					String uuidPart;
+
+					if (rawId.contains("::")) {
+						uuidPart = rawId.split("::")[1];
+					} else {
+						uuidPart = rawId;
+					}
+
+					UUID msgID = UUID.fromString(uuidPart);
 
 					MessageInformation stats = data.get(msgID);
 					if (stats == null) {
