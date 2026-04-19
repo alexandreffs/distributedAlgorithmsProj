@@ -80,13 +80,6 @@
 %% Of note is the shared affiliation of the first two authors, and the
 %% "authornote" and "authornotemark" commands
 %% used to denote shared contribution to the research.
-\author{Miguel Mestre}
-\authornote{Student number 73018}
-\email{mfg.mestre@campus.fct.unl.pt}
-\affiliation{%
-  \institution{MEI, DI, FCT, UNL}
-}
-
 \author{Alexandre Santos}
 \authornote{Student number 72970}
 \email{aff.santos@campus.fct.unl.pt}
@@ -94,7 +87,14 @@
   \institution{MEI, DI, FCT, UNL}
 }
 
-\author{Nelson}
+\author{Miguel Mestre}
+\authornote{Student number 73018}
+\email{mfg.mestre@campus.fct.unl.pt}
+\affiliation{%
+  \institution{MEI, DI, FCT, UNL}
+}
+
+\author{Nelson Martins}
 \authornote{Student number 11111. Marbles did not understood the assignment but he did use an LLM to make a song related with the project.}
 \email{marbles@cool.se}
 \affiliation{%
@@ -107,7 +107,7 @@
 %% other information printed in the page headers. This command allows
 %% the author to define a more concise list
 %% of authors' names for this purpose.
-\renewcommand{\shortauthors}{Miguel, Alexandre, and Nelson.}
+\renewcommand{\shortauthors}{Alexandre, Miguel and Nelson.}
 
 %%
 %% The abstract is a short summary of the work to be presented in the
@@ -495,8 +495,271 @@ experimental methodology presented later in the paper.
 \section{Experimental Evaluation}
 \label{sec:evaluation}
 
+This section evaluates the performance of different combinations of
+membership and broadcast protocols. We first describe the experimental
+setup and methodology, and then present and discuss the results in terms
+of reliability, latency, and communication overhead.
+
+\subsection{Methodology}
+
+All experiments were conducted using the Babel framework, where each node
+executes one membership protocol and one broadcast protocol. We evaluate
+different combinations of:
+
+\begin{itemize}
+    \item Membership protocols: Cyclon and HyParView
+    \item Broadcast protocols: Flood, Eager-Push Gossip, and Hybrid Adaptive Gossip
+\end{itemize}
+
+Each experiment consists of multiple broadcast rounds where messages are
+periodically injected into the system. Nodes log message reception events,
+which are later processed offline to compute performance metrics.
+
+To ensure statistical significance, each configuration is executed multiple
+times and results are aggregated across runs.
+
+\subsubsection{Metrics}
+
+We evaluate the system using the following metrics:
+
+\begin{itemize}
+    \item \textbf{Reliability}: percentage of nodes that successfully receive a message.
+    \item \textbf{Latency}: time elapsed between message creation and its reception at each node.
+    \item \textbf{Message Overhead}: total number of messages exchanged during execution.
+\end{itemize}
+
+\subsubsection{System Parameters}
+
+All experiments were conducted using the same base configuration unless
+otherwise stated.
+
+\paragraph{Membership Parameters}
+
+For Cyclon, we use the following configuration:
+
+\begin{itemize}
+    \item View size ($maxN$): 8
+    \item Shuffle period: 2000 ms
+    \item Shuffle subset size: 4
+\end{itemize}
+
+For HyParView, the parameters are:
+
+\begin{itemize}
+    \item Active view size: 5
+    \item Passive view size: 20
+    \item Active Random Walk Length (ARWL): 5
+    \item Passive Random Walk Length (PRWL): 2
+\end{itemize}
+
+Additionally, the passive view maintenance is configured as:
+
+\begin{itemize}
+    \item Shuffle TTL: 3
+    \item Shuffle period: 4000 ms
+    \item Active nodes exchanged ($k_{active}$): 3
+    \item Passive nodes exchanged ($k_{passive}$): 4
+\end{itemize}
+
+\paragraph{Broadcast Parameters}
+
+For Eager-Push Gossip:
+
+\begin{itemize}
+    \item Fanout: 5
+\end{itemize}
+
+For the Hybrid Adaptive Gossip protocol:
+
+\begin{itemize}
+    \item Initial eager fanout: 3
+    \item Lazy fanout: 2
+    \item Minimum eager fanout: 2
+    \item Maximum eager fanout: 5
+    \item Adaptation window: 12 messages
+\end{itemize}
+
+\paragraph{Application Parameters}
+
+\begin{itemize}
+    \item Payload size: 20 bytes
+    \item Broadcast interval: 3000 ms
+    \item Operation pool size: 1000 messages
+\end{itemize}
+
+\subsubsection{Discussion of Parameters}
+
+The chosen parameters reflect typical configurations used in gossip-based
+systems. In Cyclon, the view size and shuffle parameters aim to maintain
+a sufficiently random overlay while keeping overhead low. In HyParView,
+the small active view combined with a larger passive view enables fast
+recovery from failures while preserving scalability.
+
+For dissemination, the eager-push fanout of 5 represents a moderately
+aggressive gossip strategy, expected to provide high reliability. The
+hybrid protocol starts with a lower eager fanout and adapts dynamically
+within predefined bounds, allowing it to react to observed duplication
+levels in the network.
+
+These parameter choices aim to balance reliability, latency, and overhead,
+while allowing meaningful comparison between protocol combinations.
+
+\subsection{Results}
+
+In this section, we present the results obtained for each combination of
+membership and broadcast protocols. We analyze reliability, latency, and
+message overhead based on the collected execution logs.
+
+\subsubsection{Reliability}
+
+Table~\ref{tab:reliability} summarizes the reliability results.
+
+\begin{table}[h]
+\centering
+\caption{Reliability results for each protocol combination.}
+\label{tab:reliability}
+\begin{tabular}{lccc}
+\toprule
+Configuration & Avg (\%) & Min (\%) & Max (\%) \\
+\midrule
+EagerPush + Cyclon & 99.08 & 91 & 100 \\
+EagerPush + Full & 99.43 & 93 & 100 \\
+EagerPush + HyParView & 100.0 & 100 & 100 \\
+Flood + Cyclon & 99.99 & 97 & 100 \\
+Flood + Full & 100.0 & 100 & 100 \\
+Flood + HyParView & 98.02 & 1 & 99 \\
+Hybrid + Full & 98.27 & 90 & 100 \\
+Hybrid + Cyclon & 87.96 & 65 & 99 \\
+Hybrid + HyParView & 97.31 & 1 & 99 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Flood and Eager-Push approaches generally achieve very high reliability,
+with several configurations reaching near-perfect delivery. Notably,
+EagerPush combined with HyParView achieves 100\% reliability across all
+runs.
+
+However, the hybrid protocol exhibits more variability, particularly when
+combined with Cyclon, where reliability drops to approximately 88\% on
+average. This suggests that the adaptive mechanism may be too conservative
+in some scenarios, reducing message propagation.
+
+\subsubsection{Latency}
+
+Table~\ref{tab:latency} presents the latency results.
+
+\begin{table}[h]
+\centering
+\caption{Latency results for each protocol combination (ms).}
+\label{tab:latency}
+\begin{tabular}{lccc}
+\toprule
+Configuration & Avg & Min & Max \\
+\midrule
+EagerPush + Cyclon & 6.13 & 3 & 706 \\
+EagerPush + Full & 6.14 & 3 & 749 \\
+EagerPush + HyParView & 4.57 & 2 & 698 \\
+Flood + Cyclon & 66.74 & 3 & 862 \\
+Flood + Full & 198.87 & 20 & 13563 \\
+Flood + HyParView & 3.29 & 0 & 204 \\
+Hybrid + Full & 7.03 & 4 & 475 \\
+Hybrid + Cyclon & 7.65 & 3 & 642 \\
+Hybrid + HyParView & 5.52 & 0 & 815 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Gossip-based approaches (EagerPush and Hybrid) consistently achieve low
+latency, typically between 4 and 7 ms. EagerPush combined with HyParView
+achieves the lowest latency among these configurations.
+
+Flood exhibits significantly higher latency, especially when combined
+with Full Membership, where the average latency reaches nearly 200 ms.
+This is likely due to excessive message redundancy and network congestion.
+
+Interestingly, Flood combined with HyParView shows very low latency,
+suggesting that the smaller active view reduces congestion effects.
+
+\subsubsection{Message Overhead}
+
+The total number of messages exchanged across all configurations is
+approximately 239k–240k messages.
+
+Although Flood is expected to generate the highest overhead, the results
+indicate that overhead differences are relatively small across
+configurations. This is likely due to the fixed duration and workload of
+the experiments.
+
+Nevertheless, Flood-based approaches still produce more redundant message
+transmissions, which contributes to increased latency.
+
+\subsection{Discussion}
+
+The results highlight several important trade-offs.
+
+First, Eager-Push Gossip achieves an excellent balance between reliability
+and latency. In particular, when combined with HyParView, it reaches perfect
+reliability while maintaining the lowest latency among all configurations.
+
+Flood broadcast guarantees high reliability but at the cost of significantly
+higher latency, especially in dense overlays such as Full Membership. This
+confirms that excessive redundancy leads to network congestion.
+
+The hybrid adaptive protocol reduces latency compared to Flood and maintains
+reasonable reliability. However, its performance is sensitive to the choice
+of membership protocol. In particular, when combined with Cyclon, reliability
+drops noticeably, indicating that the adaptive fanout may be too aggressive
+in reducing eager transmissions.
+
+Finally, the choice of membership protocol has a clear impact. HyParView
+generally provides better reliability and lower latency, likely due to its
+structured active view and fast recovery mechanisms. Cyclon, while simpler,
+may lead to less stable dissemination paths, especially for adaptive
+protocols.
+
 \section{Conclusions}
 \label{sec:conclusions}
+
+In this paper, we evaluated the interaction between membership protocols
+and broadcast strategies in gossip-based distributed systems. We studied
+Cyclon and HyParView overlays combined with Flood, Eager-Push Gossip,
+and a Hybrid Adaptive Gossip protocol.
+
+Our results show that Eager-Push Gossip provides the best overall trade-off
+between reliability and latency. In particular, when combined with
+HyParView, it achieves perfect reliability with very low latency,
+demonstrating the effectiveness of combining structured overlays with
+controlled gossip dissemination.
+
+Flood broadcast guarantees high delivery ratios but introduces significant
+latency due to message redundancy and network congestion, especially in
+fully connected overlays.
+
+The hybrid adaptive protocol shows promising results in reducing overhead
+while maintaining acceptable latency. However, its reliability is sensitive
+to the underlying membership protocol, suggesting that further tuning of
+the adaptation mechanism is needed.
+
+Overall, the results confirm that both the broadcast strategy and the
+membership protocol play a crucial role in system performance, and that
+careful parameter tuning is essential to achieve an optimal balance.
+
+\subsection{Limitations}
+
+This evaluation was conducted under a fixed set of parameters and stable
+network conditions. The behavior of the protocols under high churn or
+network failures was not explored. Additionally, the adaptive mechanism
+used in the hybrid protocol relies on simple heuristics, which may not
+capture all relevant system dynamics.
+
+\subsection{Future Work}
+
+Future work could explore more advanced adaptive strategies, including
+dynamic tuning based on real-time network feedback. It would also be
+interesting to evaluate these protocols under more challenging conditions,
+such as high churn or partial network failures, and to compare them with
+other state-of-the-art gossip-based dissemination techniques.
 
 
 \end{document}

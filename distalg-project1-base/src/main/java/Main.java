@@ -66,13 +66,14 @@ public class Main {
         // HybridGossipBroadcast broadcast = new HybridGossipBroadcast(props, myself);
 
         // Membership Protocol
-        GossipBasedFullMembership membership = new GossipBasedFullMembership(props, myself);
+        // GossipBasedFullMembership membership = new GossipBasedFullMembership(props,
+        // myself);
 
         // Cyclon Protocol
         // CyclonMembership membership = new CyclonMembership(props, myself);
 
         // HyParView
-        // HyParViewMembership membership = new HyParViewMembership(props, myself);
+        HyParViewMembership membership = new HyParViewMembership(props, myself);
 
         // Register applications in babel
         babel.registerProtocol(broadcastApp);

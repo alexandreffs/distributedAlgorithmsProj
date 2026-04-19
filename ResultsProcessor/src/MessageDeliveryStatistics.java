@@ -84,7 +84,7 @@ public class MessageDeliveryStatistics {
 			for (Path nodeDir : nodeDirs) {
 				if (!Files.isDirectory(nodeDir))
 					continue;
-				try (DirectoryStream<Path> files = Files.newDirectoryStream(nodeDir, "*-message.log")) {
+				try (DirectoryStream<Path> files = Files.newDirectoryStream(nodeDir, "message.log")) {
 					for (Path f : files) {
 						logFiles.add(f);
 					}

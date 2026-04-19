@@ -7,7 +7,7 @@
 		</Console>
 
 		<File name="msglog" fileName="message.log"
-			immediateFlush="false"
+			immediateFlush="true"
 			append="false">
 			<PatternLayout
 				pattern="%d{UNIX_MILLIS} %msg%n" />
