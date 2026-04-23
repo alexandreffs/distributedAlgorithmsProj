@@ -229,31 +229,6 @@ public class CyclonMembership extends GenericProtocol {
             logger.info("Queued ShuffleRequest to {} with sample {} until connection is up", oldest, mySample);
         }
     }
-    // private void uponShuffleTimer(ShuffleTimer timer, long timerId) {
-    // logger.info("Shuffle timer triggered. View: {}", neigh);
-
-    // if (neigh.isEmpty())
-    // return;
-
-    // increaseAges();
-
-    // Host oldest = pickOldest();
-    // if (oldest == null)
-    // return;
-
-    // // Create sample excluding oldest
-    // Map<Host, Integer> subset = randomSubset(Math.max(0, subsetSize - 1),
-    // oldest);
-
-    // // Store sample sent later for merge when reply arrives
-    // Map<Host, Integer> mySample = new HashMap<>(subset);
-    // mySample.put(self, 0);
-
-    // sentSamples.put(oldest, new HashMap<>(mySample));
-    // tryConnectIfNeeded(oldest);
-    // sendMessage(new ShuffleRequest(mySample), oldest);
-    // logger.info("Sent ShuffleRequest to {} with sample {}", oldest, mySample);
-    // }
 
     /*
      * --------------------------------- Cyclon Logic -----------------------------
@@ -423,11 +398,6 @@ public class CyclonMembership extends GenericProtocol {
         pending.remove(peer);
         pendingShuffleRequests.remove(peer);
 
-        // Optional policy:
-        // if connection never came up, remove from view
-        // if (!connectedPeers.contains(peer)) {
-        // neigh.remove(peer);
-        // }
     }
 
     private void uponInConnectionUp(InConnectionUp event, int channelId) {

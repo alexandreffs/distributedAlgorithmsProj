@@ -4,6 +4,7 @@
 %% The original source files were:
 %%
 %% samples.dtx  (with options: `sigconf')
+
 %% 
 %% IMPORTANT NOTICE:
 %% 
@@ -22,6 +23,10 @@
 %%
 %% The first command in your LaTeX source must be the \documentclass command.
 \documentclass[sigconf,a4paper]{acmart}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{float}
 
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
@@ -72,7 +77,7 @@
 %%
 %% The "title" command has an optional parameter,
 %% allowing the author to define a "short title" to be used in page headers.
-\title{Evaluating Membership and Broadcast Protocol Combinations in Gossip-Based Systems}
+\title{Evaluating Membership and Broadcast Protocols}
 
 %%
 %% The "author" command and its associated commands are used to define
@@ -95,8 +100,8 @@
 }
 
 \author{Nelson Martins}
-\authornote{Student number 11111. Marbles did not understood the assignment but he did use an LLM to make a song related with the project.}
-\email{marbles@cool.se}
+\authornote{Student number 73954}
+\email{nad.martins@campus.fct.unl.pt}
 \affiliation{%
   \institution{MEI, DI, FCT, UNL}
 }
@@ -445,42 +450,111 @@ low, the eager fanout is increased, within predefined bounds. The goal
 is to adapt dissemination aggressiveness to the redundancy currently
 observed in the network.
 
-\subsection{Message Processing and Deduplication}
+\begin{algorithm}[H]
+\caption{Hybrid Gossip Broadcast}
+\label{alg:hybrid}
+\begin{algorithmic}[1]
 
-All broadcast protocols in our system use message identifiers to ensure
-that each application message is delivered at most once per node. When a
-message is received for the first time, it is stored in the local cache,
-delivered to the application, and processed according to the semantics
-of the selected broadcast protocol. If the same message is received
-again, it is classified as a duplicate and discarded, although in the
-hybrid protocol duplicate observations are also used as input for the
-adaptive fanout mechanism.
+\State \textbf{State:}
+\State      neighbours 
+\State      received
+\State      requested
+\State      messageCache
+\State      currentEagerFanout
+\State      lazyFanout
+\State      minEagerFanout
+\State      maxEagerFanout
+\State      adaptWindow
+\State      newCount $\gets 0$
+\State      duplicateCount $\gets 0$
 
-This deduplication mechanism is fundamental for correctness. Without it,
-both flood and gossip-based protocols would repeatedly retransmit the
-same content, leading to unnecessary work and potentially unbounded
-message circulation.
+\Procedure{BroadcastRequest}{$mid, sender, payload$}
+    \State $m \gets (mid, sender, payload)$
+    \State \Call{ReceiveFull}{$m, self$}
+\EndProcedure
 
-\subsection{Correctness Discussion}
+\Procedure{ReceiveFull}{$m, from$}
+    \If{$m.mid \notin received$}
+        \State $received \gets received \cup \{m.mid\}$
+        \State $messageCache[m.mid] \gets m$
+        \State $newCount \gets newCount + 1$
+        \State Deliver message to application
 
-At a high level, the correctness of the implementation depends on two
-main properties. First, the membership layer must maintain a connected
-enough overlay so that broadcast can progress through the network.
-Second, the broadcast layer must guarantee that a message is delivered at
-most once at each node while still being forwarded according to the
-rules of the protocol.
+        \State $eagerTargets \gets$ random subset of neighbours excluding $from$
+        \State $lazyTargets \gets$ random subset excluding eagerTargets
 
-The first property is supported by the design of Cyclon and HyParView,
-which continuously refresh neighbor information and attempt to avoid
-overlay fragmentation. The second property is guaranteed by the use of
-unique message identifiers and local caches of already seen messages.
+        \ForAll{$p \in eagerTargets$}
+            \State Send FULL message to $p$
+        \EndFor
 
-For the hybrid protocol, correctness additionally depends on the
-interaction between lazy notifications and explicit requests. A lazy
-notification never delivers a message by itself; it only informs a node
-that the message exists. Delivery occurs only when the full payload is
-received, either eagerly or as a reply to a request. This preserves the
-same at-most-once delivery semantics as the other broadcast protocols.
+        \ForAll{$p \in lazyTargets$}
+            \State Send IHAVE($m.mid$) to $p$
+        \EndFor
+
+    \Else
+        \State $duplicateCount \gets duplicateCount + 1$
+    \EndIf
+
+    \State \Call{AdaptFanout}{}
+\EndProcedure
+
+\Procedure{ReceiveIHave}{$mid, from$}
+    \If{$mid \notin received$ \textbf{and} $mid \notin requested$}
+        \State $requested \gets requested \cup \{mid\}$
+        \State Send REQUEST($mid$) to $from$
+    \EndIf
+\EndProcedure
+
+\Procedure{ReceiveRequest}{$mid, from$}
+    \If{$mid \in messageCache$}
+        \State Send FULL($mid$) to $from$
+    \EndIf
+\EndProcedure
+
+\Procedure{AdaptFanout}{}
+    \State $total \gets newCount + duplicateCount$
+    \If{$total < adaptWindow$}
+        \State \Return
+    \EndIf
+
+    \State $dupRate \gets duplicateCount / total$
+
+    \If{$dupRate > 0.5$}
+        \State decrease eager fanout
+    \ElsIf{$dupRate < 0.2$}
+        \State increase eager fanout
+    \EndIf
+
+    \State reset counters
+\EndProcedure
+
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Correctness Argument}
+
+The protocol preserves \emph{at-most-once delivery} because each node keeps
+a local set of previously received message identifiers. A message is only
+delivered to the application the first time its identifier is observed.
+Any subsequent reception of the same full message is classified as a
+duplicate and is ignored for delivery purposes.
+
+Assuming the overlay remains connected and messages between correct nodes
+are eventually delivered, the protocol also ensures \emph{eventual delivery}
+to nodes that are reachable from the broadcaster. This follows from the
+fact that, whenever a node receives a message for the first time, it
+propagates either the full message to eager targets or an \texttt{IHAVE}
+announcement to lazy targets. A node that learns about a message through
+an \texttt{IHAVE} and does not yet possess the payload explicitly requests
+it through a \texttt{REQUEST} message. Therefore, lazy dissemination does
+not suppress delivery; it only postpones full payload transmission until
+it is needed.
+
+The adaptive fanout mechanism does not affect safety, since it only changes
+the number of eager targets selected in future transmissions and does not
+bypass deduplication or local delivery rules. Its impact is therefore on
+performance and reliability under particular parameter choices, but not on
+the at-most-once delivery property.
 
 \subsection{Implementation Summary}
 
@@ -489,8 +563,7 @@ comparison between overlay construction and dissemination strategies.
 Cyclon and HyParView provide two distinct membership mechanisms, while
 flooding, eager-push gossip, and the proposed hybrid adaptive protocol
 provide three dissemination strategies with different reliability and
-overhead trade-offs. This modular structure also supports the
-experimental methodology presented later in the paper.
+overhead trade-offs.
 
 \section{Experimental Evaluation}
 \label{sec:evaluation}
@@ -694,6 +767,43 @@ the experiments.
 Nevertheless, Flood-based approaches still produce more redundant message
 transmissions, which contributes to increased latency.
 
+\subsubsection{Membership Overhead}
+
+Table~\ref{tab:membership} summarizes the membership overhead results in
+terms of control messages per second.
+
+\begin{table}[h]
+\centering
+\caption{Membership overhead (messages per second).}
+\label{tab:membership}
+\begin{tabular}{lc}
+\toprule
+Configuration & Overhead (msg/s) \\
+\midrule
+EagerPush + Cyclon & 115.73 \\
+Hybrid + Cyclon & 115.18 \\
+Flood + Cyclon & --- \\
+EagerPush + HyParView & 98.48 \\
+Flood + HyParView & 101.65 \\
+Hybrid + HyParView & 97.51 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The results show that Cyclon incurs higher membership overhead than
+HyParView, with values around 115 msg/s compared to approximately
+98–102 msg/s for HyParView. This difference is expected due to the
+more frequent shuffle operations in Cyclon (every 2 seconds), while
+HyParView performs maintenance less frequently (every 4 seconds).
+
+Additionally, the membership overhead remains consistent across
+different broadcast protocols. This confirms that overlay maintenance
+is largely independent from the dissemination strategy, as expected
+from the modular design of the system.
+
+The missing value for Flood + Cyclon is due to incomplete log data
+and is therefore omitted from the analysis.
+
 \subsection{Discussion}
 
 The results highlight several important trade-offs.
@@ -749,9 +859,7 @@ careful parameter tuning is essential to achieve an optimal balance.
 
 This evaluation was conducted under a fixed set of parameters and stable
 network conditions. The behavior of the protocols under high churn or
-network failures was not explored. Additionally, the adaptive mechanism
-used in the hybrid protocol relies on simple heuristics, which may not
-capture all relevant system dynamics.
+network failures was not explored.
 
 \subsection{Future Work}
 

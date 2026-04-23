@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
@@ -193,23 +192,6 @@ public class HyParViewMembership extends GenericProtocol {
             }
         }
     }
-    // private void uponJoin(JoinMessage msg, Host from, short sourceProto, int
-    // channelId) {
-    // Host newNode = msg.getNewNode();
-    // logger.info("Received {} from {}", msg, from);
-
-    // if (isActiveViewFull()) {
-    // dropRandomElementFromActiveView();
-    // }
-
-    // addNodeActiveView(newNode);
-
-    // for (Host n : new HashSet<>(activeView)) {
-    // if (!n.equals(newNode)) {
-    // sendMessage(new ForwardJoinMessage(newNode, ARWL), n);
-    // }
-    // }
-    // }
 
     private void uponForwardJoin(ForwardJoinMessage msg, Host from, short sourceProto, int channelId) {
         Host newNode = msg.getNewNode();
@@ -233,29 +215,6 @@ public class HyParViewMembership extends GenericProtocol {
             }
         }
     }
-    // private void uponForwardJoin(ForwardJoinMessage msg, Host from, short
-    // sourceProto, int channelId) {
-    // Host newNode = msg.getNewNode();
-    // int ttl = msg.getTimeToLive();
-
-    // logger.info("Received {} from {}", msg, from);
-
-    // if (newNode.equals(self))
-    // return;
-
-    // if (ttl == 0 || activeView.size() == 1) {
-    // addNodeActiveView(newNode);
-    // } else {
-    // if (ttl == PRWL) {
-    // addNodePassiveView(newNode);
-    // }
-
-    // Host next = getRandomNodeExcluding(activeView, from);
-    // if (next != null) {
-    // sendMessage(new ForwardJoinMessage(newNode, ttl - 1), next);
-    // }
-    // }
-    // }
 
     private void uponDisconnect(DisconnectMessage msg, Host from, short sourceProto, int channelId) {
         Host peer = from;
@@ -273,19 +232,6 @@ public class HyParViewMembership extends GenericProtocol {
             attemptActiveViewRepair();
         }
     }
-    // private void uponDisconnect(DisconnectMessage msg, Host from, short
-    // sourceProto, int channelId) {
-    // Host peer = from;
-    // logger.info("Received {} from {}", msg, from);
-
-    // if (activeView.remove(peer)) {
-    // if (connectedPeers.remove(peer)) {
-    // triggerNotification(new NeighbourDown(peer));
-    // }
-    // addNodePassiveView(peer);
-    // attemptActiveViewRepair();
-    // }
-    // }
 
     /* -------------------------------------------------------------------------- */
     /* NEIGHBOR */
@@ -329,17 +275,6 @@ public class HyParViewMembership extends GenericProtocol {
             attemptActiveViewRepair();
         }
     }
-    // private void uponNeighborReply(NeighborReplyMessage msg, Host from, short
-    // sourceProto, int channelId) {
-    // logger.info("Received {} from {}", msg, from);
-
-    // if (msg.isAccepted()) {
-    // addNodeActiveView(from);
-    // } else {
-    // addNodePassiveView(from);
-    // attemptActiveViewRepair();
-    // }
-    // }
 
     /* -------------------------------------------------------------------------- */
     /* SHUFFLE */
@@ -382,17 +317,6 @@ public class HyParViewMembership extends GenericProtocol {
         Set<Host> sample = buildShuffleSample();
         sendMessage(new ShuffleMessage(self, sample, shuffleTTL), target);
     }
-    // private void uponShuffleTimer(ShuffleTimer timer, long timerId) {
-    // if (activeView.isEmpty())
-    // return;
-
-    // Host target = getRandomNode(activeView);
-    // if (target == null)
-    // return;
-
-    // Set<Host> sample = buildShuffleSample();
-    // sendMessage(new ShuffleMessage(self, sample, shuffleTTL), target);
-    // }
 
     /* -------------------------------------------------------------------------- */
     /* AUX */
@@ -414,21 +338,6 @@ public class HyParViewMembership extends GenericProtocol {
         }
     }
 
-    // private void attemptActiveViewRepair() {
-    // if (!activeView.isEmpty())
-    // return;
-    // if (passiveView.isEmpty())
-    // return;
-
-    // Host candidate = getRandomNode(passiveView);
-    // if (candidate == null)
-    // return;
-
-    // passiveView.remove(candidate);
-    // openConnection(candidate);
-    // sendMessage(new NeighborMessage(true), candidate);
-    // }
-
     private void dropRandomElementFromActiveView() {
         Host n = getRandomNode(activeView);
         if (n == null)
@@ -444,19 +353,6 @@ public class HyParViewMembership extends GenericProtocol {
         }
         addNodePassiveView(n);
     }
-    // private void dropRandomElementFromActiveView() {
-    // Host n = getRandomNode(activeView);
-    // if (n == null)
-    // return;
-
-    // sendMessage(new DisconnectMessage(), n);
-
-    // activeView.remove(n);
-    // if (connectedPeers.remove(n)) {
-    // triggerNotification(new NeighbourDown(n));
-    // }
-    // addNodePassiveView(n);
-    // }
 
     private void addNodeActiveView(Host node) {
         if (node.equals(self))
@@ -472,21 +368,6 @@ public class HyParViewMembership extends GenericProtocol {
         activeView.add(node);
         openConnection(node);
     }
-
-    // private void addNodeActiveView(Host node) {
-    // if (node.equals(self))
-    // return;
-    // if (activeView.contains(node))
-    // return;
-
-    // if (isActiveViewFull()) {
-    // dropRandomElementFromActiveView();
-    // }
-
-    // passiveView.remove(node);
-    // activeView.add(node);
-    // openConnection(node);
-    // }
 
     private void addNodePassiveView(Host node) {
         if (node.equals(self))
@@ -625,14 +506,6 @@ public class HyParViewMembership extends GenericProtocol {
             sendMessage(new NeighborMessage(false), peer);
         }
     }
-    // private void uponOutConnectionUp(OutConnectionUp event, int channelId) {
-    // Host peer = event.getNode();
-    // logger.info("Connection to {} is up", peer);
-
-    // if (activeView.contains(peer) && connectedPeers.add(peer)) {
-    // triggerNotification(new NeighbourUp(peer));
-    // }
-    // }
 
     private void uponOutConnectionDown(OutConnectionDown event, int channelId) {
         Host peer = event.getNode();
@@ -650,18 +523,6 @@ public class HyParViewMembership extends GenericProtocol {
             attemptActiveViewRepair();
         }
     }
-    // private void uponOutConnectionDown(OutConnectionDown event, int channelId) {
-    // Host peer = event.getNode();
-    // logger.info("Connection to {} is down cause {}", peer, event.getCause());
-
-    // if (activeView.remove(peer)) {
-    // if (connectedPeers.remove(peer)) {
-    // triggerNotification(new NeighbourDown(peer));
-    // }
-    // addNodePassiveView(peer);
-    // attemptActiveViewRepair();
-    // }
-    // }
 
     private void uponOutConnectionFailed(OutConnectionFailed<ProtoMessage> event, int channelId) {
         Host peer = event.getNode();
@@ -676,17 +537,6 @@ public class HyParViewMembership extends GenericProtocol {
         addNodePassiveView(peer);
         attemptActiveViewRepair();
     }
-
-    // private void uponOutConnectionFailed(OutConnectionFailed<ProtoMessage> event,
-    // int channelId) {
-    // Host peer = event.getNode();
-    // logger.info("Connection to {} failed cause: {}", peer, event.getCause());
-
-    // activeView.remove(peer);
-    // passiveView.remove(peer);
-    // connectedPeers.remove(peer);
-    // attemptActiveViewRepair();
-    // }
 
     private void uponInConnectionUp(InConnectionUp event, int channelId) {
         logger.info("Connection from {} is up", event.getNode());
@@ -704,18 +554,6 @@ public class HyParViewMembership extends GenericProtocol {
             attemptActiveViewRepair();
         }
     }
-    // private void uponInConnectionDown(InConnectionDown event, int channelId) {
-    // Host peer = event.getNode();
-    // logger.info("Connection from {} is down, cause: {}", peer, event.getCause());
-
-    // if (activeView.remove(peer)) {
-    // if (connectedPeers.remove(peer)) {
-    // triggerNotification(new NeighbourDown(peer));
-    // }
-    // addNodePassiveView(peer);
-    // attemptActiveViewRepair();
-    // }
-    // }
 
     private void uponMsgFail(ProtoMessage msg, Host host, short destProto, Throwable throwable, int channelId) {
         logger.error("Message {} to {} failed, reason: {}", msg, host, throwable);
